@@ -1,0 +1,55 @@
+{
+    "id": "fvtt_dnd5e_pidlwick",
+    "title": "Pidlwick - D&D5e Macros",
+    "description": "A compendium that provides useful macros for both DMs and players",
+    "version": "0.1.0",
+    "compatibility": {
+      "minimum": "0.11.315",
+      "verified": "0.11.315"
+    },
+    "authors": [
+      {
+        "name": "hollowphoton",
+        "url": "https://github.com/hollowphoton"
+      }
+    ],
+    "packs": [
+      {
+        "name": "macros_hotbar",
+        "label": "Hotbar Macros",
+        "system": "mosh",
+        "path": "packs/macros_hotbar.db",
+        "type": "Macro",
+        "ownership": {
+          "PLAYER": "OBSERVER",
+          "ASSISTANT": "OWNER"
+        }
+      },
+      {
+        "name": "macros_triggered",
+        "label": "Triggered Macros",
+        "path": "packs/macros_triggered.db",
+        "type": "Macro",
+        "ownership": {
+          "PLAYER": "OBSERVER",
+          "ASSISTANT": "OWNER"
+        }
+      }
+    ],
+    "relationships": {
+      "systems": [
+        {
+          "id": "dnd5e",
+          "type": "system",
+          "manifest": "https://github.com/foundryvtt/dnd5e/releases/download/release-3.1.2/system.json",
+          "compatibility": {
+            "minimum": "3.1.2",
+            "verified": "3.1.2"
+          }
+        }
+      ]
+    },
+    "url": "https://github.com/hollowphoton/fvtt_dnd5e_pidlwick",
+    "manifest": "https://github.com/hollowphoton/fvtt_dnd5e_pidlwick/releases/latest/download/module.json",
+    "download": "https://github.com/hollowphoton/fvtt_dnd5e_pidlwick/releases/download/0.1.0/fvtt_dnd5e_pidlwick.zip"
+  }
