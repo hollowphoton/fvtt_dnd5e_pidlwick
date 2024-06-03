@@ -1,4 +1,4 @@
-## Pidlwick Compendium | D&D 5e | FoundryVTT
+## Pidlwick | D&D 5e | FoundryVTT
 _(image coming soon)_
 
 This is a supplemental compendium for D&D 5e that I use in my personal game.
