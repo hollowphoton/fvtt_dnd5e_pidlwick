@@ -1,7 +1,7 @@
 ## Pidlwick | D&D 5e | FoundryVTT
 _(image coming soon)_
 
-This is a supplemental compendium for D&D 5e that I use in my personal game.
+This is a supplemental module containing automation for D&D 5e that I use in my personal game.
 
 #### GM Hotbar Macros
 - Display Token Health (Feeling Good, Beat Up, Nearly Dead)
