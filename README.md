@@ -25,9 +25,9 @@ This is a supplemental compendium for D&D 5e that I use in my personal game.
 
 #### Dependencies
 - An automated 5e World
- - MidiQOL
- - DDB Importer,
- - Chris's Premades,
- - Gambit's Premades,
- - Midi Item Showcase
+  - MidiQOL
+  - DDB Importer,
+  - Chris's Premades,
+  - Gambit's Premades,
+  - Midi Item Showcase
 - Item Piles
