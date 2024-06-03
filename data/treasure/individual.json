@@ -7,9 +7,7 @@
 			"target": 100,
 			"base_gp": "2d12",
 			"party_modifier": "none",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 2,
-			"high_fantasy_mod": 3
+			"global_modifier": 2
 		},
 		{
 			"cr_start": 9,
@@ -18,9 +16,7 @@
 			"target": 60,
 			"base_gp": "2d12",
 			"party_modifier": "none",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 2,
-			"high_fantasy_mod": 3
+			"global_modifier": 2
 		}
 	],
 	"Beast": [
@@ -31,9 +27,7 @@
 			"target": 100,
 			"base_gp": "1",
 			"party_modifier": "none",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 1,
-			"high_fantasy_mod": 2
+			"global_modifier": 1
 		}
 	],
 	"Celestial": [
@@ -44,9 +38,7 @@
 			"target": 0,
 			"base_gp": "0",
 			"party_modifier": "none",
-			"low_fantasy_mod": 0,
-			"mid_fantasy_mod": 0,
-			"high_fantasy_mod": 0
+			"global_modifier": 0
 		},
 		{
 			"cr_start": 10,
@@ -55,9 +47,7 @@
 			"target": 40,
 			"base_gp": "2d10",
 			"party_modifier": "apl",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 1,
-			"high_fantasy_mod": 2
+			"global_modifier": 1
 		}
 	],
 	"Construct": [
@@ -68,9 +58,7 @@
 			"target": 100,
 			"base_gp": "1",
 			"party_modifier": "none",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 1,
-			"high_fantasy_mod": 2
+			"global_modifier": 1
 		}
 	],
 	"Dragon": [
@@ -81,9 +69,7 @@
 			"target": 0,
 			"base_gp": "0",
 			"party_modifier": "none",
-			"low_fantasy_mod": 0,
-			"mid_fantasy_mod": 0,
-			"high_fantasy_mod": 0
+			"global_modifier": 0
 		}
 	],
 	"Elemental": [
@@ -94,9 +80,7 @@
 			"target": 0,
 			"base_gp": "0",
 			"party_modifier": "none",
-			"low_fantasy_mod": 0,
-			"mid_fantasy_mod": 0,
-			"high_fantasy_mod": 0
+			"global_modifier": 0
 		}
 	],
 	"Fey": [
@@ -107,9 +91,7 @@
 			"target": 20,
 			"base_gp": "1d4",
 			"party_modifier": "apl",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 2,
-			"high_fantasy_mod": 3
+			"global_modifier": 2
 		}
 	],
 	"Fiend": [
@@ -120,9 +102,7 @@
 			"target": 10,
 			"base_gp": "2d8",
 			"party_modifier": "apl",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 2,
-			"high_fantasy_mod": 3
+			"global_modifier": 2
 		}
 	],
 	"Giant": [
@@ -133,9 +113,7 @@
 			"target": 5,
 			"base_gp": "2d4",
 			"party_modifier": "apl",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 2,
-			"high_fantasy_mod": 3
+			"global_modifier": 2
 		}
 	],
 	"Humanoid": [
@@ -146,9 +124,7 @@
 			"target": 5,
 			"base_gp": "2d6",
 			"party_modifier": "apl",
-			"low_fantasy_mod": 0.5,
-			"mid_fantasy_mod": 1,
-			"high_fantasy_mod": 2
+			"global_modifier": 1
 		}
 	],
 	"Monstrosity": [
@@ -159,9 +135,7 @@
 			"target": 90,
 			"base_gp": "1d4",
 			"party_modifier": "none",
-			"low_fantasy_mod": 0,
-			"mid_fantasy_mod": 1,
-			"high_fantasy_mod": 2
+			"global_modifier": 1
 		}
 	],
 	"Ooze": [
@@ -172,9 +146,7 @@
 			"target": 20,
 			"base_gp": "2d12",
 			"party_modifier": "apl",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 1,
-			"high_fantasy_mod": 2
+			"global_modifier": 1
 		}
 	],
 	"Plant": [
@@ -185,9 +157,7 @@
 			"target": 60,
 			"base_gp": "2d10",
 			"party_modifier": "none",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 1,
-			"high_fantasy_mod": 2
+			"global_modifier": 1
 		}
 	],
 	"Undead": [
@@ -198,9 +168,7 @@
 			"target": 80,
 			"base_gp": "1d4",
 			"party_modifier": "apl",
-			"low_fantasy_mod": 1,
-			"mid_fantasy_mod": 1,
-			"high_fantasy_mod": 2
+			"global_modifier": 1
 		}
 	]
 }

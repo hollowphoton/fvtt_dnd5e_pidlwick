@@ -1,25 +1,25 @@
-// INDIVIDUAL TREASURE CREATOR //
+// PREPARE LAST RITES //
   // FEATURES 
-    // replaces a selected monster token with a bag of treasure containing randomized currency
-    // monsters have a chance to not drop any loot
-    //
-
+    //make token look dead & turn it into an item pile
+    //populate token with dynamic treasure based on creature type, party level, and dice rolls
+    //monsters have a chance to not drop any loot
   // CREDIT
-    // created by hollowphoton https://github.com/hollowphoton
-    // informed by the individual treasure rules in the Dungeon Master's Guide
-    // informed by the random treasure tables made by XP to Level 3 https://www.patreon.com/posts/40857187
+    //created by hollowphoton https://github.com/hollowphoton
+    //informed by the individual treasure rules in the Dungeon Master's Guide
+    //informed by the random treasure tables made by XP to Level 3 https://www.patreon.com/posts/40857187
+    //informed by many youtube videos and reddit threads about making compelling loot experiences
 
 //begin macro
-initReplaceWithTreasure();
+initPrepareLastRites();
 
 // FUNCTIONS //
 
   //replace current token with appropriate treasure
-  async function replaceWithTreasure(tokenActor,fantasyType) {
+  async function prepareLastRites(token) {
     //init vars
-    let creatureType = tokenActor.system.details.type.value;
-    let creatureCR = tokenActor.system.details.cr;
-    let avgPartyLevel = getAvgPartyLevel();
+    let creatureType = token.actor.system.details.type.value;
+    let creatureCR = token.actor.system.details.cr;
+    let avgPartyLevel = await getAvgPartyLevel();
     let partyMultiplier = 0;
     let fantasyMultiplier = 0;
     let baseGold = 0;
@@ -28,7 +28,7 @@ initReplaceWithTreasure();
     let treasureEP = 0;
     let treasureGP = 0;
     let treasurePP = 0;
-    let treasureData = parseJSONdata('modules/fvtt_dnd5e_pidlwick/data/individualTreasure.json');
+    //let treasureData = await parseJSONdata('modules/fvtt_dnd5e_pidlwick/data/individualTreasure.json');
     //parse important info from the JSON
     partyMultiplier = 0; //make this pull from the json
     fantasyMultiplier = 0; //make this pull from the json
@@ -59,7 +59,7 @@ initReplaceWithTreasure();
 
 
     //log what was done
-    console.log(`Replaced CR${creatureCR} ${creatureType} with Level ${avgPartyLevel} treasure totalling ${baseGold} gold. The gold was split into: ${treasureCP}CP,	${treasureSP}SP,	${treasureEP}EP,	${treasureGP}GP,	${treasurePP}PP`);
+    console.log(`Replaced CR ${creatureCR} ${creatureType} with Level ${avgPartyLevel} treasure totalling ${baseGold} gold. The gold was split into: ${treasureCP}CP, ${treasureSP}SP, ${treasureEP}EP, ${treasureGP}GP, ${treasurePP}PP`);
   }
 
   //get the average party level
@@ -72,12 +72,12 @@ initReplaceWithTreasure();
     game.actors.get('OY1wOXOYmKzMMhEV').system.members.forEach(function(partyMember){
       //increment counters
       partyLevels = partyLevels + partyMember.actor.system.details.level;
-      partyMembers = partyLevels + 1;
+      partyMembers = partyMembers + 1;
     });
     //calculate avg party level
     avgPartyLevel = Math.floor(partyLevels/partyMembers);
     //log what was done
-    console.log(`The average party level is ${avgPartyLevel}.`);
+    console.log(`The average party level is ${avgPartyLevel}. There were ${partyLevels} total levels across ${partyMembers} characters.`);
     //return avg party level
     return avgPartyLevel;
   }
@@ -99,15 +99,17 @@ initReplaceWithTreasure();
       // Fetch JSON data and set it as a variable
       fetchJSONFile(jsonFilePath)
         .then(jsonData => {
+          //log the json
+          console.log(jsonData);
           // Now jsonData contains the parsed JSON data
-          return jsonData;
-          // You can use jsonData as needed in your script
+          
         });
     });
+
   }
 
   //check if token(s) are selected
-  async function initReplaceWithTreasure() {
+  async function initPrepareLastRites() {
     //is there a selected character? warn if no
     if (!canvas.tokens.controlled.length) {
       //warn player
@@ -115,10 +117,8 @@ initReplaceWithTreasure();
     } else {
       //run the function for all selected tokens
       canvas.tokens.controlled.forEach(function(token){
-        replaceWithTreasure(token.actor);
+        prepareLastRites(token);
       });
-      //log what was done
-      console.log(`Token(s) found, replaced all with treasure.`);
     }
   }
 
