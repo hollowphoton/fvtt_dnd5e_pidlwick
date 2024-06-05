@@ -1,0 +1,604 @@
+<div class="dnd5e2 chat-card item-card" data-actor-id="{{ actor.id }}" data-item-id="{{ item.id }}"
+     {{#if tokenId}}data-token-id="{{tokenId}}"{{/if}} {{#if isSpell}}data-spell-level="{{ item.system.level }}"{{/if}}>
+
+    {{!-- Collapsible Item Details --}}
+    <section class="card-header description collapsible">
+
+        {{!-- Summary --}}
+        <header class="summary">
+            <img class="gold-icon" src="{{{summary_img}}}" alt="{{{summary_name}}}">
+            <div class="name-stacked border">
+                <span class="title">{{{summary_name}}}</span>
+                <span class="subtitle">{{{summary_subtitle}}}</span>
+            </div>
+            <i class="fas fa-chevron-down fa-fw"></i>
+        </header>
+
+        {{!-- Details --}}
+        <section class="details collapsible-content card-content">
+            <div class="wrapper">
+              {{{summary_desc}}}
+            </div>
+        </section>
+    </section>
+    {{!-- Main Roll Area --}}
+    <div class="midi-results">
+
+      <div class="midi-qol-attack-roll">
+        <div style="text-align:center">Attack</div>
+        <div class="midi-attack-roll midi-dice-roll dice-roll">
+          <div class="dice-result">
+            <div class="dice-formula">1d20 + 2 + 2</div>
+            <div class="dice-tooltip-collapser">
+              <div class="dice-tooltip">
+                <section class="tooltip-part">
+                  <div class="dice">
+                    <ol class="dice-rolls">
+                      <li class="roll die d20">2</li>
+                    </ol>
+                    <div class="total">
+                      <span class="label"></span>
+                      <span class="value">2</span>
+                    </div>
+                  </div>
+                </section>
+                <section class="tooltip-part constant">
+                  <div class="dice">
+                    <ol class="dice-rolls"></ol>
+                    <div class="total">
+                      <span class="value"><span class="sign">+</span>4</span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+            <h4 class="dice-total">6</h4>
+          </div>
+        </div>
+        <div class="end-midi-qol-attack-roll"></div>
+      </div>
+
+      <div class="midi-qol-hits-display">
+        <div class="midi-qol-single-hit-card">
+          <div class="dnd5e2 evaluation">
+            <div>
+              <div class="midi-qol midi-qol-hit-class target miss" style="align-content:center">
+                <img src="ddb-images/other/npc-generic-token-beast.jpeg" style="background-color:var(--dnd5e-background-10)">
+                <div class="name-stacked">
+                  <span class="midi-qol-target-name title midi-qol-gmTokenName" id="ra7kCNAVLCxv5CTl" data-uuid="Scene.ReHtcGSCV8uwchOb.Token.ra7kCNAVLCxv5CTl">
+                  Boar
+                  <i class="midi-qol-hit-symbol fas fa-times"></i>
+                  </span>
+                </div>
+                <div class="midi-qol-hit-class midi-qol-npc-ac">
+                  <span>
+                  <i class="fas fa-shield-halved"></i>
+                  <span style="font-weight:bold">13+2</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="end-midi-qol-hits-display"></div>
+      </div>
+
+      <div class="midi-qol-damage-roll">
+        <div style="text-align:center">Damage</div>
+        <div class="end-midi-qol-damage-roll"></div>
+        <div class="dice-roll midi-damage-roll">
+          <div class="dice-result">
+            <div class="dice-formula">1d6 + 2</div>
+            <div class="dice-tooltip-collapser">
+              <div class="dice-tooltip">
+                <section class="tooltip-part">
+                  <div class="dice">
+                    <ol class="dice-rolls">
+                      <li class="roll die d6">5</li>
+                      <li class="constant"><span class="sign">+</span>2</li>
+                    </ol>
+                    <div class="total">
+                      <img src="systems/dnd5e/icons/svg/damage/piercing.svg" alt="Piercing">
+                      <span class="label">Piercing</span>
+                      <span class="value">7</span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+            <h4 class="dice-total">7</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="midi-qol-other-damage-roll">
+        <div class="end-midi-qol-other-damage-roll"></div>
+      </div>
+
+      <div class="midi-qol-bonus-damage-roll">
+        <div class="end-midi-qol-bonus-bonus-roll"></div>
+      </div>
+
+      <div class="midi-qol-saves-display">
+        <div class="end-midi-qol-saves-display"></div>
+      </div>
+
+
+
+      
+    </div>
+
+
+
+
+
+    {{!-- Main Body --}}
+    {{#if hasButtons}}
+    <div class="card-buttons">
+
+        {{!-- Attacks --}}
+        {{#if hasAttack}}
+        <button type="button" data-action="attack">
+            <i class="dnd5e-icon" data-src="systems/dnd5e/icons/svg/trait-weapon-proficiencies.svg"></i>
+            {{ localize "DND5E.Attack" }}
+        </button>
+        {{/if}}
+
+        {{!-- Damage / Healing --}}
+        {{#if hasDamage}}
+        <button type="button" data-action="damage">
+            {{#if isHealing}}
+            <i class="dnd5e-icon" data-src="systems/dnd5e/icons/svg/damage/healing.svg"></i>
+            {{ localize "DND5E.Healing" }}
+            {{else}}
+            <i class="fas fa-burst"></i>
+            {{ localize "DND5E.Damage" }}
+            {{/if}}
+        </button>
+        {{/if}}
+
+        {{!-- Versatile --}}
+        {{#if isVersatile}}
+        <button type="button" data-action="versatile">
+            <i class="dnd5e-icon" data-src="systems/dnd5e/icons/svg/versatile.svg"></i>
+            {{ localize "DND5E.Versatile" }}
+        </button>
+        {{/if}}
+
+        {{!-- Saving Throw --}}
+        {{#if hasSave}}
+        {{#with item.system.save}}
+        <button type="button" data-action="save" data-ability="{{ ability }}" data-dc="{{ dc }}">
+            <i class="fas fa-shield-heart"></i>
+            {{#with (lookup (lookup @root.config.abilities ability) "label") as |abilityLabel|}}
+            <span class="visible-dc">{{ localize "DND5E.SavingThrowDC" dc=../dc ability=abilityLabel }}</span>
+            <span class="hidden-dc">{{ localize "DND5E.SavePromptTitle" ability=abilityLabel }}</span>
+            {{/with}}
+        </button>
+        {{/with}}
+        {{/if}}
+
+        {{!-- Other Formula --}}
+        {{#if item.system.formula}}
+        <button type="button" data-action="formula">
+            <i class="fas fa-ellipsis"></i>
+            {{ localize "DND5E.OtherFormula"}}
+        </button>
+        {{/if}}
+
+        {{!-- Templates --}}
+        {{#if hasAreaTarget}}
+        <button type="button" data-action="placeTemplate">
+            <i class="fas fa-bullseye"></i>
+            {{ localize "DND5E.PlaceTemplate" }}
+        </button>
+        {{/if}}
+
+        {{!-- Summoning --}}
+        {{#if item.system.hasSummoning}}
+        <button type="button" data-action="summon">
+            <i class="fa-solid fa-spaghetti-monster-flying"></i>
+            {{ localize "DND5E.Summoning.Action.Summon" }}
+        </button>
+        {{/if}}
+
+        {{!-- Tool Check --}}
+        {{#if isTool}}
+        <button type="button" data-action="toolCheck" data-ability="{{ item.system.ability }}">
+            <i class="fas fa-hammer"></i>
+            {{ localize "DND5E.UseItem" item=item.name }}
+        </button>
+        {{/if}}
+
+        {{!-- Ability Check --}}
+        {{#if hasAbilityCheck}}
+        <button type="button" data-action="abilityCheck" data-ability="{{ item.system.ability }}">
+            <i class="dnd5e-icon" data-src="systems/dnd5e/icons/svg/ability-score-improvement.svg"></i>
+            {{ labels.abilityCheck }}
+        </button>
+        {{/if}}
+    </div>
+    {{/if}}
+
+    {{!-- Reactions --}}
+    {{#if (and data.activation.condition (eq data.activation.type "reaction"))}}
+    <p class="supplement"><strong>{{ localize "DND5E.Reaction" }}</strong>{{ data.activation.condition }}</p>
+    {{/if}}
+
+    {{!-- Materials --}}
+    {{#if data.materials.value}}
+    <p class="supplement"><strong>{{ localize "DND5E.Materials" }}</strong>{{ data.materials.value }}</p>
+    {{/if}}
+
+    {{!-- Item Properties --}}
+    {{#if data.hasProperties}}
+    <ul class="card-footer pills unlist">
+        {{#each data.tags}}
+        <li class="pill pill-sm">
+            <span class="label">{{ this }}</span>
+        </li>
+        {{/each}}
+        {{#each data.properties}}
+        <li class="pill pill-sm">
+            <span class="label">{{ this }}</span>
+        </li>
+        {{/each}}
+    </ul>
+    {{/if}}
+
+    {{!-- Applicable Effects --}}
+    <div class="card-tray effects-tray collapsible collapsed">
+        <label class="roboto-upper">
+            <i class="fas fa-bolt"></i>
+            <span>{{ localize "DND5E.Effects" }}</span>
+            <i class="fas fa-caret-down"></i>
+        </label>
+        <div class="collapsible-content">
+            <ul class="effects unlist wrapper">
+                {{~#each effects~}}
+                <li class="effect" data-effect-id="{{ id }}" data-uuid="{{ uuid }}" data-transferred="{{ transfer }}">
+                    <img class="gold-icon" alt="{{ name }}" src="{{ img }}">
+                    <div class="name-stacked">
+                        <span class="title">{{ name }}</span>
+                        <span class="subtitle">{{ duration.label }}</span>
+                    </div>
+                    <button type="button" class="apply-effect" data-action="applyEffect"
+                            data-tooltip="DND5E.EffectsApplyTokens" aria-label="{{ localize "DND5E.EffectsApplyTokens" }}">
+                        <i class="fas fa-reply-all fa-flip-horizontal"></i>
+                    </button>
+                </li>
+                {{~/each~}}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="dnd5e2 chat-card midi-chat-card item-card " data-actor-id="6dzQHS5uqL3wSv2R" data-item-id="I83JhKmurFId9ExL" data-actor-uuid="Scene.ReHtcGSCV8uwchOb.Token.zT78iEfZF8NaEbdn.Actor.6dzQHS5uqL3wSv2R" data-token-id="Scene.ReHtcGSCV8uwchOb.Token.zT78iEfZF8NaEbdn" data-token-uuid="Scene.ReHtcGSCV8uwchOb.Token.zT78iEfZF8NaEbdn" data-display-challenge="">
+
+<section class="card-header description collapsible collapsed">
+
+<header class="summary">
+<img class="gold-icon" src="icons/weapons/polearms/javelin-flared.webp" alt="Javelin">
+<div class="name-stacked border">
+  <span class="title">Javelin</span>
+  <span class="subtitle">
+    Simple Melee
+  </span>
+</div>
+<i class="fas fa-chevron-down fa-fw"></i>
+</header>
+<section class="details collapsible-content card-content">
+<div class="wrapper">
+  <p><em>Melee or Ranged Weapon Attack:</em> +5 to hit, reach 5 ft. or range 30/120 ft., one target. <em>Hit:</em> <span><span class="roll-link" data-type="damage" data-formula="1d6 + 2" data-damage-type="piercing"><a data-action="roll"><i class="fa-solid fa-dice-d20"></i>1d6 + 2</a></span> piercing</span> damage.</p>
+</div>
+</section>
+</section>
+
+<div class="card-buttons midi-buttons">
+
+
+</div>
+<div class="midi-results">
+<div class="midi-qol-attack-roll"><div style="text-align:center">Attack</div><div class="midi-attack-roll midi-dice-roll dice-roll">
+<div class="dice-result">
+  <div class="dice-formula">1d20 + 2 + 2</div>
+  <div class="dice-tooltip-collapser">
+<div class="dice-tooltip">
+<section class="tooltip-part">
+<div class="dice">
+  <ol class="dice-rolls">
+    <li class="roll die d20">2</li>
+  </ol>
+  <div class="total">
+    <span class="label"></span>
+    <span class="value">2</span>
+  </div>
+</div>
+</section>
+<section class="tooltip-part constant">
+<div class="dice">
+  <ol class="dice-rolls"></ol>
+  <div class="total">
+    <span class="value"><span class="sign">+</span>4</span>
+  </div>
+</div>
+</section></div>
+</div>
+
+  <h4 class="dice-total">6</h4>
+</div>
+</div><div class="end-midi-qol-attack-roll"></div>
+</div>
+<div class="midi-qol-hits-display"><div class="midi-qol-single-hit-card">
+<div class="dnd5e2 evaluation">
+<div>
+<div class="midi-qol midi-qol-hit-class target miss" style="align-content:center">
+  <img src="ddb-images/other/npc-generic-token-beast.jpeg" style="background-color:var(--dnd5e-background-10)">
+  
+  <div class="name-stacked">
+    <span class="midi-qol-target-name title midi-qol-gmTokenName" id="ra7kCNAVLCxv5CTl" data-uuid="Scene.ReHtcGSCV8uwchOb.Token.ra7kCNAVLCxv5CTl">
+      Boar
+      <i class="midi-qol-hit-symbol fas fa-times"></i>
+    </span>
+    
+  </div>
+  <div class="midi-qol-hit-class midi-qol-npc-ac">
+    <span>
+      <i class="fas fa-shield-halved"></i>
+      <span style="font-weight:bold">13+2</span>
+    </span>
+  </div>
+</div>
+</div>
+</div>
+</div><div class="end-midi-qol-hits-display"></div>
+</div>
+<div class="midi-qol-damage-roll"><div style="text-align:center">Damage</div><div class="end-midi-qol-damage-roll"></div>
+<div class="dice-roll midi-damage-roll">
+<div class="dice-result">
+<div class="dice-formula">1d6 + 2</div>
+<div class="dice-tooltip-collapser">
+<div class="dice-tooltip">
+
+
+<section class="tooltip-part">
+  <div class="dice">
+  <ol class="dice-rolls">
+    
+    <li class="roll die d6">5</li>
+    
+    
+    <li class="constant"><span class="sign">+</span>2</li>
+    
+  </ol>
+  <div class="total">
+    <img src="systems/dnd5e/icons/svg/damage/piercing.svg" alt="Piercing">
+    <span class="label">Piercing</span>
+    <span class="value">7</span>
+  </div>
+  </div>
+</section>
+
+</div>
+</div>
+<h4 class="dice-total">7</h4>
+</div>
+</div></div>
+<div class="midi-qol-other-damage-roll">
+<div class="end-midi-qol-other-damage-roll"></div>
+</div>
+<div class="midi-qol-bonus-damage-roll">
+<div class="end-midi-qol-bonus-bonus-roll"></div>
+</div>
+<div class="midi-qol-saves-display">
+<div class="end-midi-qol-saves-display"></div>
+</div>
+
+</div>
+
+
+
+<ul class="card-footer pills unlist">
+<li class="pill pill-sm">
+<span class="label">1 Action</span>
+</li>
+<li class="pill pill-sm">
+<span class="label">30 / 120 ft</span>
+</li>
+<li class="pill pill-sm">
+<span class="label">Instantaneous</span>
+</li>
+<li class="pill pill-sm">
+<span class="label">Equipped</span>
+</li>
+<li class="pill pill-sm">
+<span class="label">Proficient</span>
+</li>
+</ul>
+
+</div>
+
+
+
+
+--------------------------------------------------------------------------------------
+
+<div class="dnd5e2 chat-card item-card" data-actor-id="{{ actor.id }}" data-item-id="{{ item.id }}"
+     {{#if tokenId}}data-token-id="{{tokenId}}"{{/if}} {{#if isSpell}}data-spell-level="{{ item.system.level }}"{{/if}}>
+
+    {{!-- Collapsible Item Details --}}
+    <section class="card-header description collapsible">
+
+        {{!-- Summary --}}
+        <header class="summary">
+            <img class="gold-icon" src="{{ item.img }}" alt="{{ item.name }}">
+            <div class="name-stacked border">
+                <span class="title">{{ item.name }}</span>
+                {{#if (or data.subtitle item.system.chatFlavor)}}
+                <span class="subtitle">
+                    {{#if item.system.chatFlavor}}{{ item.system.chatFlavor }}
+                    {{else}}{{{ data.subtitle }}}{{/if}}
+                </span>
+                {{/if}}
+            </div>
+            <i class="fas fa-chevron-down fa-fw"></i>
+        </header>
+
+        {{!-- Details --}}
+        <section class="details collapsible-content card-content">
+            <div class="wrapper">
+                {{{ data.description.chat }}}
+            </div>
+        </section>
+    </section>
+
+    {{!-- Item Actions --}}
+    {{#if hasButtons}}
+    <div class="card-buttons">
+
+        {{!-- Attacks --}}
+        {{#if hasAttack}}
+        <button type="button" data-action="attack">
+            <i class="dnd5e-icon" data-src="systems/dnd5e/icons/svg/trait-weapon-proficiencies.svg"></i>
+            {{ localize "DND5E.Attack" }}
+        </button>
+        {{/if}}
+
+        {{!-- Damage / Healing --}}
+        {{#if hasDamage}}
+        <button type="button" data-action="damage">
+            {{#if isHealing}}
+            <i class="dnd5e-icon" data-src="systems/dnd5e/icons/svg/damage/healing.svg"></i>
+            {{ localize "DND5E.Healing" }}
+            {{else}}
+            <i class="fas fa-burst"></i>
+            {{ localize "DND5E.Damage" }}
+            {{/if}}
+        </button>
+        {{/if}}
+
+        {{!-- Versatile --}}
+        {{#if isVersatile}}
+        <button type="button" data-action="versatile">
+            <i class="dnd5e-icon" data-src="systems/dnd5e/icons/svg/versatile.svg"></i>
+            {{ localize "DND5E.Versatile" }}
+        </button>
+        {{/if}}
+
+        {{!-- Saving Throw --}}
+        {{#if hasSave}}
+        {{#with item.system.save}}
+        <button type="button" data-action="save" data-ability="{{ ability }}" data-dc="{{ dc }}">
+            <i class="fas fa-shield-heart"></i>
+            {{#with (lookup (lookup @root.config.abilities ability) "label") as |abilityLabel|}}
+            <span class="visible-dc">{{ localize "DND5E.SavingThrowDC" dc=../dc ability=abilityLabel }}</span>
+            <span class="hidden-dc">{{ localize "DND5E.SavePromptTitle" ability=abilityLabel }}</span>
+            {{/with}}
+        </button>
+        {{/with}}
+        {{/if}}
+
+        {{!-- Other Formula --}}
+        {{#if item.system.formula}}
+        <button type="button" data-action="formula">
+            <i class="fas fa-ellipsis"></i>
+            {{ localize "DND5E.OtherFormula"}}
+        </button>
+        {{/if}}
+
+        {{!-- Templates --}}
+        {{#if hasAreaTarget}}
+        <button type="button" data-action="placeTemplate">
+            <i class="fas fa-bullseye"></i>
+            {{ localize "DND5E.PlaceTemplate" }}
+        </button>
+        {{/if}}
+
+        {{!-- Summoning --}}
+        {{#if item.system.hasSummoning}}
+        <button type="button" data-action="summon">
+            <i class="fa-solid fa-spaghetti-monster-flying"></i>
+            {{ localize "DND5E.Summoning.Action.Summon" }}
+        </button>
+        {{/if}}
+
+        {{!-- Tool Check --}}
+        {{#if isTool}}
+        <button type="button" data-action="toolCheck" data-ability="{{ item.system.ability }}">
+            <i class="fas fa-hammer"></i>
+            {{ localize "DND5E.UseItem" item=item.name }}
+        </button>
+        {{/if}}
+
+        {{!-- Ability Check --}}
+        {{#if hasAbilityCheck}}
+        <button type="button" data-action="abilityCheck" data-ability="{{ item.system.ability }}">
+            <i class="dnd5e-icon" data-src="systems/dnd5e/icons/svg/ability-score-improvement.svg"></i>
+            {{ labels.abilityCheck }}
+        </button>
+        {{/if}}
+    </div>
+    {{/if}}
+
+    {{!-- Reactions --}}
+    {{#if (and data.activation.condition (eq data.activation.type "reaction"))}}
+    <p class="supplement"><strong>{{ localize "DND5E.Reaction" }}</strong>{{ data.activation.condition }}</p>
+    {{/if}}
+
+    {{!-- Materials --}}
+    {{#if data.materials.value}}
+    <p class="supplement"><strong>{{ localize "DND5E.Materials" }}</strong>{{ data.materials.value }}</p>
+    {{/if}}
+
+    {{!-- Item Properties --}}
+    {{#if data.hasProperties}}
+    <ul class="card-footer pills unlist">
+        {{#each data.tags}}
+        <li class="pill pill-sm">
+            <span class="label">{{ this }}</span>
+        </li>
+        {{/each}}
+        {{#each data.properties}}
+        <li class="pill pill-sm">
+            <span class="label">{{ this }}</span>
+        </li>
+        {{/each}}
+    </ul>
+    {{/if}}
+
+    {{!-- Applicable Effects --}}
+    <div class="card-tray effects-tray collapsible collapsed">
+        <label class="roboto-upper">
+            <i class="fas fa-bolt"></i>
+            <span>{{ localize "DND5E.Effects" }}</span>
+            <i class="fas fa-caret-down"></i>
+        </label>
+        <div class="collapsible-content">
+            <ul class="effects unlist wrapper">
+                {{~#each effects~}}
+                <li class="effect" data-effect-id="{{ id }}" data-uuid="{{ uuid }}" data-transferred="{{ transfer }}">
+                    <img class="gold-icon" alt="{{ name }}" src="{{ img }}">
+                    <div class="name-stacked">
+                        <span class="title">{{ name }}</span>
+                        <span class="subtitle">{{ duration.label }}</span>
+                    </div>
+                    <button type="button" class="apply-effect" data-action="applyEffect"
+                            data-tooltip="DND5E.EffectsApplyTokens" aria-label="{{ localize "DND5E.EffectsApplyTokens" }}">
+                        <i class="fas fa-reply-all fa-flip-horizontal"></i>
+                    </button>
+                </li>
+                {{~/each~}}
+            </ul>
+        </div>
+    </div>
+</div>

@@ -19,51 +19,118 @@ initPrepareLastRites();
     //init vars
     let creatureType = token.actor.system.details.type.value;
     let creatureCR = token.actor.system.details.cr;
-    let avgPartyLevel = await getAvgPartyLevel();
-    let partyMultiplier = 0;
-    let fantasyMultiplier = 0;
-    let baseGold = 0;
+    let avgPartyLevel = await getAvgPartyLevel(1);
+    let partyModifier = 1;
+    let globalModifier = 1;
+    let minionModifier = 1;
+    let rollDie = '';
+    let rollTarget = 0;
+    let baseGold = '';
+    let treasureRaw = 0;
     let treasureCP = 0;
     let treasureSP = 0;
     let treasureEP = 0;
     let treasureGP = 0;
     let treasurePP = 0;
-    //let treasureData = await parseJSONdata('modules/fvtt_dnd5e_pidlwick/data/individualTreasure.json');
-    //parse important info from the JSON
-    partyMultiplier = 0; //make this pull from the json
-    fantasyMultiplier = 0; //make this pull from the json
-    baseGold = 0; //make this pull from the json
+    //parse info from the creature
+      //minion status
+      token.actor.effects.forEach(function(effect){
+        //check for minion stat
+        if (effect === 'Minion') {
+          minionModifier = 0.2;
+        }
+      });
+    //parse info from the json
+      //parse json
+      let treasureData = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure/individual.json');
+      //loop through and find a valid entry
+      treasureData[creatureType].forEach(function(entry){
+        //check for row that matches creature
+        if (entry.cr_start <= creatureCR && entry.cr_end >= creatureCR) {
+          //pull parameters
+          rollDie = entry.die;
+          rollTarget = entry.target;
+          baseGold = entry.base_gp;
+          if(entry.party_modifier === 'apl') {
+            partyModifier = avgPartyLevel;
+          } else {
+            partyModifier = 1;
+          }
+          globalModifier = entry.global_modifier;
+        }
+      });
     //roll to see if treasure is dropped
+    let treasureChance = await new Roll(rollDie).evaluate();
+    //exit if failure
+    if (treasureChance.total <= rollTarget) {
+      //mark token dead
+      markTokenDead(token);
+      //log what was done
+      console.log(`No treasure added. Rolled ${treasureChance.total} with a target of ${rollTarget}.`);
+      //return
+      return;
+    }
+    //roll for treasure
+    let treasureRoll = await new Roll(baseGold).evaluate();
+    //calculate raw treasure in GP
+    treasureRaw = Math.floor(treasureRoll.total * partyModifier * globalModifier * minionModifier);
+    //split gold value into various chunks
+
     
+    treasureCP = 0;
+    treasureSP = 0;
+    treasureEP = 0;
+    treasureGP = treasureRaw;
+    treasurePP = 0;
 
 
-
-      //decide what treasure to put 
-
-        //roll percentage die for whether they get anything
-
-        //create item pile where selected token is otherwise skip the rest
-
-        //roll die for what amount of gold
-
-        //split gold value into various chunks
-
-      //turn token into item pile
-
-      //populate token with treasure
-
+    //turn token into item pile
+    //populate token with treasure
     //make token dead
 
+
+
+	  //generate chat message
+      //prepare data
+      let messageData = {
+        token: this,
+        summary_img: summary_img,
+        summary_name: summary_name,
+        summary_subtitle: summary_subtitle,
+        summary_desc: summary_desc
+      };
+      //prepare template
+      messageTemplate = 'modules/fvtt_dnd5e_pidlwick/templates/chat/individualTreasure.html';
+      //render template
+      messageContent = await renderTemplate(messageTemplate, messageData);
+      //make message
+      let macroMsg = await rollResult.toMessage({
+        id: chatId,
+        user: game.user.id,
+        speaker: {actor: this.id, token: this.token, alias: this.name},
+        content: messageContent
+      },{keepId:true});
+      if(game.modules.get("dice-so-nice").active){
+        //wait for dice
+        await game.dice3d.waitFor3DAnimationByMessageID(chatId);
+      }
 
 
 
 
     //log what was done
-    console.log(`Replaced CR ${creatureCR} ${creatureType} with Level ${avgPartyLevel} treasure totalling ${baseGold} gold. The gold was split into: ${treasureCP}CP, ${treasureSP}SP, ${treasureEP}EP, ${treasureGP}GP, ${treasurePP}PP`);
+    console.log(`Treasure added. Rolled ${treasureChance.total} with a target of ${rollTarget}. Raw treasure set to ${treasureRaw}: ${treasureRoll.total} * ${partyModifier} * ${globalModifier} * ${minionModifier}. Replaced CR ${creatureCR} ${creatureType} with Level ${avgPartyLevel} treasure totalling ${treasureRaw} gold. The gold was split into: ${treasureCP}CP, ${treasureSP}SP, ${treasureEP}EP, ${treasureGP}GP, ${treasurePP}PP`);
   }
 
   //get the average party level
-  async function getAvgPartyLevel() {
+  async function markTokenDead(token) {
+    //write this
+  }
+
+
+
+  //get the average party level
+  async function getAvgPartyLevel(multiplier) {
     //init vars
     let partyLevels = 0;
     let partyMembers = 0;
@@ -75,37 +142,11 @@ initPrepareLastRites();
       partyMembers = partyMembers + 1;
     });
     //calculate avg party level
-    avgPartyLevel = Math.floor(partyLevels/partyMembers);
+    avgPartyLevel = Math.floor((partyLevels/partyMembers)*multiplier);
     //log what was done
     console.log(`The average party level is ${avgPartyLevel}. There were ${partyLevels} total levels across ${partyMembers} characters.`);
     //return avg party level
     return avgPartyLevel;
-  }
-
-  //parse JSON into an object
-  async function parseJSONdata(jsonFilePath) {
-    //wrap the whole thing in a promise, so that it waits for the file
-    return new Promise(async (resolve) => {
-      //get the file
-      async function fetchJSONFile(filePath) {
-        try {
-          const response = await fetch(filePath);
-          const data = await response.json();
-          return data;
-        } catch (error) {
-          console.error('Error fetching JSON file:', error);
-        }
-      }
-      // Fetch JSON data and set it as a variable
-      fetchJSONFile(jsonFilePath)
-        .then(jsonData => {
-          //log the json
-          console.log(jsonData);
-          // Now jsonData contains the parsed JSON data
-          
-        });
-    });
-
   }
 
   //check if token(s) are selected
