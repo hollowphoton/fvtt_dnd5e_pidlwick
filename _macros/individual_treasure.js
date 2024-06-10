@@ -42,7 +42,7 @@ initPrepareLastRites();
       });
     //parse info from the json
       //parse json
-      let treasureData = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure/individual.json');
+      let treasureData = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure.json');
       //loop through and find a valid entry
       treasureData[creatureType].forEach(function(entry){
         //check for row that matches creature
@@ -70,23 +70,88 @@ initPrepareLastRites();
       //return
       return;
     }
+    //add bonus dice if certain conditions are met
+      //add 1d6 for nat100
+
+      //add 1d6 for every 5th level
+
     //roll for treasure
     let treasureRoll = await new Roll(baseGold).evaluate();
     //calculate raw treasure in GP
     treasureRaw = Math.floor(treasureRoll.total * partyModifier * globalModifier * minionModifier);
+    //adjust final treasure with RNG (between .75 and 1.25)
+    treasureRaw = Math.floor(treasureRaw * ((Math.random()*0.5)+0.75));
     //split gold value into various chunks
-
+      //
     
     treasureCP = 0;
     treasureSP = 0;
     treasureEP = 0;
-    treasureGP = treasureRaw;
+    treasureGP = 0;
     treasurePP = 0;
 
 
     //turn token into item pile
+    game.itempiles.API.turnTokensIntoItemPiles(token);
     //populate token with treasure
+
+                    //get table data
+                    let itemData = await game.packs.get(itemLocation).getDocument(itemId);
+                    //add or increase the count of the item, depending on type, if the actor has it
+                    if (this.items.getName(itemData.name)) {
+                      //if this is an item, increase the count
+                      if (itemData.type === 'item') {
+                        //get current quantity
+                        oldValue = this.items.getName(itemData.name).system.quantity;
+                        newValue = oldValue + addAmount;
+                        //increase severity of the condition
+                        this.items.getName(itemData.name).update({'system.quantity': newValue});
+                        //create message text
+                        flavorText = `Quantity has increased from <strong>` + oldValue + `</strong> to <strong>` + newValue + `</strong>.`;
+                      //if this is a condition, increase the severity
+                      } else if (itemData.type === 'condition') {
+                        //get current severity
+                        oldValue = this.items.getName(itemData.name).system.severity;
+                        newValue = oldValue + addAmount;
+                        //increase severity of the condition
+                        this.items.getName(itemData.name).update({'system.severity': newValue});
+                        //create message text
+                        flavorText = this.getFlavorText('item','condition','increase') + `Severity has increased from <strong>` + oldValue + `</strong> to <strong>` + newValue + `</strong>.`;
+                      //if this is a weapon or armor, add another one
+                      } else if (itemData.type === 'weapon' || itemData.type === 'armor') {
+                        //add item to the players inventory
+                        await this.createEmbeddedDocuments('Item', [itemData]);
+                        //create message text
+                        flavorText = `You add another one of these to your inventory.`;
+                      }
+                    } else {
+                      //if this is an item, add it
+                      if (itemData.type === 'item') {
+                        //give the character the item
+                        await this.createEmbeddedDocuments('Item', [itemData]);
+                        //increase severity of the condition
+                        this.items.getName(itemData.name).update({'system.quantity': addAmount});
+                        //create message text
+                        flavorText = `You add <strong>` + addAmount + `</strong> of these to your inventory..`;
+                      //if this is a condition, add it
+                      } else if (itemData.type === 'condition') {
+                        //give the character the item
+                        await this.createEmbeddedDocuments('Item', [itemData]);
+                        //increase severity of the condition
+                        this.items.getName(itemData.name).update({'system.severity': addAmount});
+                        //create message text
+                        flavorText = this.getFlavorText('item','condition','add') + `, with a severity of <strong>` + addAmount + `</strong>.`;
+                      //if this is a weapon or armor, add it
+                      } else if (itemData.type === 'weapon' || itemData.type === 'armor') {
+                        //add item to the players inventory
+                        await this.createEmbeddedDocuments('Item', [itemData]);
+                        //create message text
+                        flavorText = `You add this to your inventory.`;
+                      }
+                    }
     //make token dead
+
+
 
 
 
