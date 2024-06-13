@@ -1,8 +1,8 @@
 // PREPARE LAST RITES //
   // FEATURES 
     //make token look dead & turn it into an item pile
-    //populate token with dynamic treasure based on creature type, party level, and dice rolls
-    //monsters have a chance to not drop any loot
+    //populate token with dynamic treasure and items based on creature type, party level, and dice rolls
+    //not every creature will drop something
   // CREDIT
     //created by hollowphoton https://github.com/hollowphoton
     //informed by the individual treasure rules in the Dungeon Master's Guide
@@ -20,23 +20,23 @@ initPrepareLastRites();
     let creatureType = token.actor.system.details.type.value;
     let creatureCR = token.actor.system.details.cr;
     let avgPartyLevel = await getAvgPartyLevel(1);
+
+      //see if I can just eat the JSON entry as a single thing that I can reference everywhere else
+
     let partyModifier = 1;
     let globalModifier = 1;
     let minionModifier = 1;
+    let lootModifier = 1;
     let rollDie = '';
     let rollTarget = 0;
     let baseGold = '';
     let treasureRaw = 0;
-    let treasureCP = 0;
-    let treasureSP = 0;
-    let treasureEP = 0;
-    let treasureGP = 0;
-    let treasurePP = 0;
     //parse info from the creature
       //minion status
       token.actor.effects.forEach(function(effect){
         //check for minion stat
         if (effect === 'Minion') {
+          //change liklihood of treasure + loot
           minionModifier = 0.2;
         }
       });
@@ -81,9 +81,18 @@ initPrepareLastRites();
     treasureRaw = Math.floor(treasureRoll.total * partyModifier * globalModifier * minionModifier);
     //adjust final treasure with RNG (between .75 and 1.25)
     treasureRaw = Math.floor(treasureRaw * ((Math.random()*0.5)+0.75));
-    //split gold value into various chunks
-      //
-    
+    //give gold to token
+      //determine coin distribution
+      treasureFinal = splitCoins(treasureRaw,treasureRoll.total);
+      //update token
+      await token.actor.update({
+          "system.currency.cp": token.actor.system.currency.cp + treasureFinal[1],
+          "system.currency.sp": token.actor.system.currency.sp + treasureFinal[2],
+          "system.currency.sp": token.actor.system.currency.sp + treasureFinal[3],
+          "system.currency.gp": token.actor.system.currency.gp + treasureFinal[4],
+          "system.currency.pp": token.actor.system.currency.pp + treasureFinal[5]
+      });
+
     treasureCP = 0;
     treasureSP = 0;
     treasureEP = 0;
@@ -152,7 +161,13 @@ initPrepareLastRites();
     //make token dead
 
 
+                    ///ADD LOOT
 
+                    //have a book randomly be in there sometimes? or should that be left to the d100 macro? probably.
+                    //maybe redo the creature loot tables to contain books where appropriate. nah seems fine.
+
+
+                    //need a user form to pop up first?
 
 
 	  //generate chat message
@@ -187,12 +202,18 @@ initPrepareLastRites();
     console.log(`Treasure added. Rolled ${treasureChance.total} with a target of ${rollTarget}. Raw treasure set to ${treasureRaw}: ${treasureRoll.total} * ${partyModifier} * ${globalModifier} * ${minionModifier}. Replaced CR ${creatureCR} ${creatureType} with Level ${avgPartyLevel} treasure totalling ${treasureRaw} gold. The gold was split into: ${treasureCP}CP, ${treasureSP}SP, ${treasureEP}EP, ${treasureGP}GP, ${treasurePP}PP`);
   }
 
-  //get the average party level
+  //make token look dead
   async function markTokenDead(token) {
     //write this
   }
 
-
+  //return distribution of coins from base gold
+  async function splitCoins(goldPieces,rollTotal) {
+    //write this
+    //have some roll that determines whether electrum is used
+    //think about having a range for each currency
+    return [cp,sp,ep,gp,pp];
+  }
 
   //get the average party level
   async function getAvgPartyLevel(multiplier) {
