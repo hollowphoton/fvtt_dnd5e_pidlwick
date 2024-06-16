@@ -1,8 +1,8 @@
 {
     "id": "fvtt_dnd5e_pidlwick",
     "title": "Pidlwick - D&D5e Macros",
-    "description": "A D&D 5e compendium that provides useful functions for DMs and players",
-    "version": "0.3.1",
+    "description": "A D&D 5e module that provides useful functions for DMs and players",
+    "version": "0.3.2",
     "compatibility": {
       "minimum": "11",
       "verified": "11"

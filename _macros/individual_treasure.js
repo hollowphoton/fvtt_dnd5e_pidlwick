@@ -16,23 +16,15 @@ initPrepareLastRites();
 
   //replace current token with appropriate treasure
   async function prepareLastRites(token) {
-    //init vars
-    let creatureType = token.actor.system.details.type.value;
-    let creatureCR = token.actor.system.details.cr;
+    //get game metadata
+    let treasureData = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure.json');
     let avgPartyLevel = await getAvgPartyLevel(1);
-
-      //see if I can just eat the JSON entry as a single thing that I can reference everywhere else
-
-    let partyModifier = 1;
-    let globalModifier = 1;
-    let minionModifier = 1;
-    let lootModifier = 1;
-    let rollDie = '';
-    let rollTarget = 0;
-    let baseGold = '';
-    let treasureRaw = 0;
     //parse info from the creature
-      //minion status
+      //core stats
+      let creatureType = token.actor.system.details.type.value;
+      let creatureCR = token.actor.system.details.cr;
+      let minionModifier = 1;
+      //update modifier if minion
       token.actor.effects.forEach(function(effect){
         //check for minion stat
         if (effect === 'Minion') {
@@ -40,9 +32,35 @@ initPrepareLastRites();
           minionModifier = 0.2;
         }
       });
+    //parse needed data from JSON
+      //individual treasure
+
+      //creature loot
+
+      //gemstones
+    
+    //roll some dice
+      //roll for chance of loot
+
+      //roll for gold
+
+      //roll for creature loot
+
+      //roll for special loot
+    
+    //pop up form to confirm everything
+
+    //add everything to the token
+
+    //turn the token dead
+
+    //post chat message
+
+
+
+
+
     //parse info from the json
-      //parse json
-      let treasureData = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure.json');
       //loop through and find a valid entry
       treasureData[creatureType].forEach(function(entry){
         //check for row that matches creature
@@ -59,6 +77,9 @@ initPrepareLastRites();
           globalModifier = entry.global_modifier;
         }
       });
+
+
+
     //roll to see if treasure is dropped
     let treasureChance = await new Roll(rollDie).evaluate();
     //exit if failure
