@@ -16,33 +16,97 @@ initPrepareLastRites();
 
   //replace current token with appropriate treasure
   async function prepareLastRites(token) {
-    //get game metadata
+    //get treasure metadata
     let treasureData = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure.json');
-    let avgPartyLevel = await getAvgPartyLevel(1);
     //parse info from the creature
       //core stats
       let creatureType = token.actor.system.details.type.value;
+      let creatureSubType = token.actor.system.details.type.subtype;      
       let creatureCR = token.actor.system.details.cr;
+      let isMinion = false;
       let minionModifier = 1;
       //update modifier if minion
       token.actor.effects.forEach(function(effect){
         //check for minion stat
         if (effect === 'Minion') {
           //change liklihood of treasure + loot
+          isMinion = true;
           minionModifier = 0.2;
         }
       });
+      //log what was done
+      console.log(`Preparing treasure for ${creatureType}, subtype: ${creatureSubType}, cr: ${creatureCR}, minion: ${isMinion}, minionMod: ${minionModifier}.`);
+    //parse info from PCs
+      //calculate APL
+      let avgPartyLevel = await getAvgPartyLevel(1);
+      //calculate gemstone level
+        //base is 10
+        let gemstoneLevel = [10,50,100];
+        //upgrade level based on APL
+        if (avgPartyLevel >= 6 && avgPartyLevel <= 10) {gemstoneLevel = [50,100,500]};
+        if (avgPartyLevel >= 11 && avgPartyLevel <= 15) {gemstoneLevel = [100,500,1000]};
+        if (avgPartyLevel >= 16 && avgPartyLevel <= 10) {gemstoneLevel = [500,1000,5000]};
+      //log what was done
+      console.log(`Party APL: ${avgPartyLevel}, gemstone level: ${gemstoneLevel}.`);
     //parse needed data from JSON
       //individual treasure
-
+        //get base entry
+        let individualTreasure = treasureData.individual_treasure[creatureType];
+        //filter out entries that don't match this creature
+        for (let i = 0; i < individualTreasure.length; i++) {
+          if (arr[i].cr_start > creatureCR || arr[i].cr_end < creatureCR) {
+              individualTreasure.splice(i, 1);
+          }
+        }
       //creature loot
-
+      let creatureLoot = treasureData.creature_loot[creatureType];
       //gemstones
-    
+      let gemstones = treasureData.gemstones[gemstoneLevel];
+      //log what was done
+      console.log(individualTreasure);
+      console.log(creatureLoot);
+      console.log(gemstones);
     //roll some dice
-      //roll for chance of loot
+      //roll for chance of treasure
+      let treasureChance = await new Roll(rollDie).evaluate();
+      //exit if failure
+      if (treasureChance.total <= rollTarget) {
+        //mark token dead
+        markTokenDead(token);
+        //log what was done
+        console.log(`No treasure added. Rolled ${treasureChance.total} with a target of ${rollTarget}.`);
+        //return
+        return;
+      }
+
+
+//i should make each one its own function, since I need them later
+
 
       //roll for gold
+        //add bonus dice if certain conditions are met
+        let bonus = 0;
+        //add 1d6 for 95 or higher (nat 20)
+        if (treasureChance.total >= 95) {bonus = bonus + 1;}
+        //add 1d6 for every 5th level
+        if (avgPartyLevel >= 5) {bonus = bonus + 1;}
+        if (avgPartyLevel >= 10) {bonus = bonus + 1;}
+        if (avgPartyLevel >= 15) {bonus = bonus + 1;}
+        //finalize bonus string
+        let bonusDie = ` + ` + bonus.toString() + `d6[goldRoll]`;
+        //finalize gold roll string
+        let goldRollString = individualTreasure[1].baseGold + '[goldRoll]' + bonusDie;
+
+        partyModifier * globalModifier * minionModifier
+
+        //adjust final treasure with RNG (between .75 and 1.25)
+        treasureRaw = Math.floor(treasureRaw * ((Math.random()*0.5)+0.75));
+
+
+
+
+
+
 
       //roll for creature loot
 
@@ -51,7 +115,14 @@ initPrepareLastRites();
     //pop up form to confirm everything
 
     //add everything to the token
-
+          //update token
+          await token.actor.update({
+            "system.currency.cp": token.actor.system.currency.cp + treasureFinal[1],
+            "system.currency.sp": token.actor.system.currency.sp + treasureFinal[2],
+            "system.currency.sp": token.actor.system.currency.sp + treasureFinal[3],
+            "system.currency.gp": token.actor.system.currency.gp + treasureFinal[4],
+            "system.currency.pp": token.actor.system.currency.pp + treasureFinal[5]
+        });
     //turn the token dead
 
     //post chat message
@@ -60,65 +131,12 @@ initPrepareLastRites();
 
 
 
-    //parse info from the json
-      //loop through and find a valid entry
-      treasureData[creatureType].forEach(function(entry){
-        //check for row that matches creature
-        if (entry.cr_start <= creatureCR && entry.cr_end >= creatureCR) {
-          //pull parameters
-          rollDie = entry.die;
-          rollTarget = entry.target;
-          baseGold = entry.base_gp;
-          if(entry.party_modifier === 'apl') {
-            partyModifier = avgPartyLevel;
-          } else {
-            partyModifier = 1;
-          }
-          globalModifier = entry.global_modifier;
-        }
-      });
 
 
 
-    //roll to see if treasure is dropped
-    let treasureChance = await new Roll(rollDie).evaluate();
-    //exit if failure
-    if (treasureChance.total <= rollTarget) {
-      //mark token dead
-      markTokenDead(token);
-      //log what was done
-      console.log(`No treasure added. Rolled ${treasureChance.total} with a target of ${rollTarget}.`);
-      //return
-      return;
-    }
-    //add bonus dice if certain conditions are met
-      //add 1d6 for nat100
 
-      //add 1d6 for every 5th level
 
-    //roll for treasure
-    let treasureRoll = await new Roll(baseGold).evaluate();
-    //calculate raw treasure in GP
-    treasureRaw = Math.floor(treasureRoll.total * partyModifier * globalModifier * minionModifier);
-    //adjust final treasure with RNG (between .75 and 1.25)
-    treasureRaw = Math.floor(treasureRaw * ((Math.random()*0.5)+0.75));
-    //give gold to token
-      //determine coin distribution
-      treasureFinal = splitCoins(treasureRaw,treasureRoll.total);
-      //update token
-      await token.actor.update({
-          "system.currency.cp": token.actor.system.currency.cp + treasureFinal[1],
-          "system.currency.sp": token.actor.system.currency.sp + treasureFinal[2],
-          "system.currency.sp": token.actor.system.currency.sp + treasureFinal[3],
-          "system.currency.gp": token.actor.system.currency.gp + treasureFinal[4],
-          "system.currency.pp": token.actor.system.currency.pp + treasureFinal[5]
-      });
 
-    treasureCP = 0;
-    treasureSP = 0;
-    treasureEP = 0;
-    treasureGP = 0;
-    treasurePP = 0;
 
 
     //turn token into item pile
@@ -223,13 +241,39 @@ initPrepareLastRites();
     console.log(`Treasure added. Rolled ${treasureChance.total} with a target of ${rollTarget}. Raw treasure set to ${treasureRaw}: ${treasureRoll.total} * ${partyModifier} * ${globalModifier} * ${minionModifier}. Replaced CR ${creatureCR} ${creatureType} with Level ${avgPartyLevel} treasure totalling ${treasureRaw} gold. The gold was split into: ${treasureCP}CP, ${treasureSP}SP, ${treasureEP}EP, ${treasureGP}GP, ${treasurePP}PP`);
   }
 
-  //make token look dead
+  //roll for gold
+  async function rollGold(treasureChance,rollString,modifier,rng) {
+    //add DSN dice theme
+    let rollStringFinal = rollString + `[goldroll]`;
+    //roll for treasure
+    let treasureRoll = await new Roll(rollStringFinal).evaluate();
+    //calculate raw treasure in GP
+    treasureRaw = Math.floor((treasureRoll.total * modifier) * rng);
+    //determine coin distribution
+    treasureFinal = splitCoins(treasureRaw,treasureChance);
+    //log what was done
+    console.log(`Rolled ${treasureChance.total} from a ${rollString} with a ${modifier} modifier. RNG of ${rng} applied.`);
+    //return final treasure
+    return treasureFinal;
+  }
+
+  //roll for creature loot--------------------------------------------------------------
+  async function rollLoot(rollString,) {
+
+  }
+
+  //roll for special item--------------------------------------------------------------
+  async function rollSpecial(rollString,) {
+
+  }
+  //make token look dead--------------------------------------------------------------
   async function markTokenDead(token) {
     //write this
   }
 
-  //return distribution of coins from base gold
-  async function splitCoins(goldPieces,rollTotal) {
+  //return distribution of coins from base gold--------------------------------------------------------------
+  async function splitCoins(goldPieces,treasureChance) {
+    //need to rethink how to split, i mean for rolltotal from the overall chance
     //write this
     //have some roll that determines whether electrum is used
     //think about having a range for each currency
