@@ -6,7 +6,8 @@ This is a supplemental module containing automation for D&D 5e that I use in my 
 #### GM Hotbar Macros
 - Display Token Health (Feeling Good, Beat Up, Nearly Dead)
 - Whisper
-- Kill Token (Change appearance & add dynamic treasure)
+- Defeat Enemy (Add dead status, appearance, individual treasure)
+- Defeat Boss (Add dead status, appearance, treasure hoard)
 
 #### Player Hotbar Macros
 - Display Character Health (Feeling Good, Beat Up, Nearly Dead)
