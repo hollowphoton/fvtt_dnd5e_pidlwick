@@ -12,8 +12,6 @@ export async function getAvgPartyLevel(multiplier) {
   });
   //calculate avg party level
   avgPartyLevel = Math.floor((partyLevels/partyMembers)*multiplier);
-  //log what was done
-  console.log(`The average party level is ${avgPartyLevel}. There were ${partyLevels} total levels across ${partyMembers} characters.`);
   //return avg party level
   return avgPartyLevel;
 }

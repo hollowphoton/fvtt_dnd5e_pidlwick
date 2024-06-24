@@ -1,8 +1,8 @@
 {
     "id": "fvtt_dnd5e_pidlwick",
     "title": "Pidlwick - D&D5e Macros",
-    "description": "A D&D 5e module that provides useful tools for DMs and PCs",
-    "version": "0.3.5",
+    "description": "A D&D 5e module that provides useful functions for DMs and players",
+    "version": "0.3.4",
     "compatibility": {
       "minimum": "11",
       "verified": "11"
@@ -13,15 +13,15 @@
         "url": "https://github.com/hollowphoton"
       }
     ],
-    "esmodules": [
+    "scripts": [
         "module/main.js"
     ],
     "packs": [
       {
-        "name": "gm_hotbar",
-        "label": "GM Hotbar Macros",
+        "name": "macros_hotbar",
+        "label": "Hotbar Macros",
         "system": "mosh",
-        "path": "packs/gm_hotbar.db",
+        "path": "packs/macros_hotbar.db",
         "type": "Macro",
         "ownership": {
           "PLAYER": "OBSERVER",
@@ -29,9 +29,9 @@
         }
       },
       {
-        "name": "pc_hotbar",
-        "label": "PC Hotbar Macros",
-        "path": "packs/pc_hotbar.db",
+        "name": "macros_triggered",
+        "label": "Triggered Macros",
+        "path": "packs/macros_triggered.db",
         "type": "Macro",
         "ownership": {
           "PLAYER": "OBSERVER",

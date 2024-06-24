@@ -39,7 +39,7 @@ export async function initDefeatEnemy() {
   } else {
     //run the function for all selected tokens
     canvas.tokens.controlled.forEach(function(token){
-      prepareLastRites(token);
+      defeatEnemy(token);
     });
   }
 }
@@ -83,7 +83,7 @@ export async function defeatEnemy(token) {
       //get base entry
       let individualTreasure = treasureData.individual_treasure[creatureType];
       //filter out entries that don't match this creature
-      for (let i = 0; i < individualTreasure.length; i++) {
+      for (let i = 0; i < individualTreasure.length; i++) {//----------------------------------it breaks here
         if (arr[i].cr_start > creatureCR || arr[i].cr_end < creatureCR) {
             individualTreasure.splice(i, 1);
         }

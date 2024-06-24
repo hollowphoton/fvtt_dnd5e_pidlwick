@@ -6,11 +6,14 @@ import {initDefeatEnemy} from "./token.js";
 
 //hooks
   //register core functions
-  Hooks.once('init', function () {
+  Hooks.once('init', () => {
+    console.log('My Awesome Module | Initializing');
     game.pidlwick = {
       initDefeatEnemy
     };
   });
+
+
   //dice so nice -- test with: /roll 1d100[treasureroll] + 4d6[goldroll] + 1d12[specialroll]
     //add custom treasure roll dice
     Hooks.once('diceSoNiceReady', (dice3d) => {
