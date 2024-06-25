@@ -83,28 +83,41 @@ export async function defeatEnemy(token) {
       //get base entry
       let individualTreasure = treasureData.individual_treasure[creatureType];
       //filter out entries that don't match this creature
-      for (let i = 0; i < individualTreasure.length; i++) {//----------------------------------it breaks here
-        if (arr[i].cr_start > creatureCR || arr[i].cr_end < creatureCR) {
+      for (let i = 0; i < individualTreasure.length; i++) {
+        if (individualTreasure[i].cr_start > creatureCR || individualTreasure[i].cr_end < creatureCR) {
             individualTreasure.splice(i, 1);
         }
       }
+      //calculate min treasure chance
+      let minTreasureChance = Math.min(individualTreasure[0].gp_target,individualTreasure[0].loot_target,individualTreasure[0].special_target);
     //creature loot
     let creatureLoot = treasureData.creature_loot[creatureType];
     //gemstones
     let gemstones = treasureData.gemstones[gemstoneLevel];
-    //log what was done
-    console.log(individualTreasure);
-    console.log(creatureLoot);
-    console.log(gemstones);
+ 
+
+
+
+
+
+
   //roll some dice
     //roll for chance of treasure
-    let treasureChance = await new Roll(rollDie).evaluate();
-    //exit if failure
-    if (treasureChance.total <= rollTarget) {
+    let treasureChance = await new Roll(individualTreasure[0].die).evaluate();
+
+
+      //--------------------------------rethink this, now I need to do 3 different checks.
+    
+    
+    
+      //exit if failure
+
+
+    if (treasureChance.total <= minTreasureChance) {
       //mark token dead
       markTokenDead(token);
       //log what was done
-      console.log(`No treasure added. Rolled ${treasureChance.total} with a target of ${rollTarget}.`);
+      console.log(`No treasure added. Rolled ${treasureChance.total} with a target of at least ${minChance}.`);
       //return
       return;
     }
