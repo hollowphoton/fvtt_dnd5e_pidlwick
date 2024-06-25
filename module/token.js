@@ -94,26 +94,11 @@ export async function defeatEnemy(token) {
     let creatureLoot = treasureData.creature_loot[creatureType];
     //gemstones
     let gemstones = treasureData.gemstones[gemstoneLevel];
- 
-
-
-
-
-
-
   //roll some dice
     //roll for chance of treasure
-    let treasureChance = await new Roll(individualTreasure[0].die).evaluate();
-
-
-      //--------------------------------rethink this, now I need to do 3 different checks.
-    
-    
-    
-      //exit if failure
-
-
-    if (treasureChance.total <= minTreasureChance) {
+    let treasureRoll = await new Roll(individualTreasure[0].die).evaluate();
+    //exit if failure
+    if (treasureRoll.total < minTreasureChance) {
       //mark token dead
       markTokenDead(token);
       //log what was done
@@ -121,39 +106,18 @@ export async function defeatEnemy(token) {
       //return
       return;
     }
-
-
-//i should make each one its own function, since I need them later
-
-
-    //roll for gold
-      //add bonus dice if certain conditions are met
-      let bonus = 0;
-      //add 1d6 for 95 or higher (nat 20)
-      if (treasureChance.total >= 95) {bonus = bonus + 1;}
-      //add 1d6 for every 5th level
-      if (avgPartyLevel >= 5) {bonus = bonus + 1;}
-      if (avgPartyLevel >= 10) {bonus = bonus + 1;}
-      if (avgPartyLevel >= 15) {bonus = bonus + 1;}
-      //finalize bonus string
-      let bonusDie = ` + ` + bonus.toString() + `d6[goldRoll]`;
-      //finalize gold roll string
-      let goldRollString = individualTreasure[1].baseGold + '[goldRoll]' + bonusDie;
-
-      partyModifier * globalModifier * minionModifier
-
-      //adjust final treasure with RNG (between .75 and 1.25)
-      treasureRaw = Math.floor(treasureRaw * ((Math.random()*0.5)+0.75));
+    //roll for gold if initial roll was above threshold
+    let awardGold = await rollGold(treasureRoll.total,creatureType,individualTreasure[0],0.25);
+    //roll for loot if initial roll was above threshold
+    let awardLoot = await rollLoot(treasureRoll.total,creatureType,individualTreasure[0],creatureLoot);
+    //roll for a special item if initial roll was above threshold
+    let awardSpecial = await rollSpecial(treasureRoll.total,individualTreasure[0],gemstones);
 
 
 
 
 
 
-
-    //roll for creature loot
-
-    //roll for special loot
   
   //pop up form to confirm everything
 
