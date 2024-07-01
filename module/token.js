@@ -46,22 +46,21 @@ export async function initDefeatEnemy() {
 
 //replace current token with appropriate treasure
 export async function defeatEnemy(token) {
-  //get treasure metadata
+  //get JSON data
   let treasureData = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure.json');
+  let d100Data = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure.json');
   //parse info from the creature
     //core stats
     let creatureType = token.actor.system.details.type.value;
     let creatureSubType = token.actor.system.details.type.subtype;      
     let creatureCR = token.actor.system.details.cr;
     let isMinion = false;
-    let minionModifier = 1;
     //update modifier if minion
     token.actor.effects.forEach(function(effect){
       //check for minion stat
       if (effect === 'Minion') {
         //change liklihood of treasure + loot
         isMinion = true;
-        minionModifier = 0.2;
       }
     });
     //log what was done
@@ -71,11 +70,11 @@ export async function defeatEnemy(token) {
     let avgPartyLevel = await getAvgPartyLevel(1);
     //calculate gemstone level
       //base is 10
-      let gemstoneLevel = [10,50,100];
+      let gemstoneLevels = [10,50,100];
       //upgrade level based on APL
-      if (avgPartyLevel >= 6 && avgPartyLevel <= 10) {gemstoneLevel = [50,100,500]};
-      if (avgPartyLevel >= 11 && avgPartyLevel <= 15) {gemstoneLevel = [100,500,1000]};
-      if (avgPartyLevel >= 16 && avgPartyLevel <= 10) {gemstoneLevel = [500,1000,5000]};
+      if (avgPartyLevel >= 6 && avgPartyLevel <= 10) {gemstoneLevels = [50,100,500]};
+      if (avgPartyLevel >= 11 && avgPartyLevel <= 15) {gemstoneLevels = [100,500,1000]};
+      if (avgPartyLevel >= 16 && avgPartyLevel <= 10) {gemstoneLevels = [500,1000,5000]};
     //log what was done
     console.log(`Party APL: ${avgPartyLevel}, gemstone level: ${gemstoneLevel}.`);
   //parse needed data from JSON
@@ -91,9 +90,15 @@ export async function defeatEnemy(token) {
       //calculate min treasure chance
       let minTreasureChance = Math.min(individualTreasure[0].gp_target,individualTreasure[0].loot_target,individualTreasure[0].special_target);
     //creature loot
-    let creatureLoot = treasureData.creature_loot[creatureType];
+    let creatureLoot = treasureData.creature_loot[creatureType][creatureSubType];
+    //special table
+    let specialTable = treasureData.special_roll;
+    //books
+    let book_library = d100Data.items['Library Books'];
+    let book_interesting = d100Data.items['Interesting Books'];
+    let book_evil = d100Data.items['Banned & Evil Books'];
     //gemstones
-    let gemstones = treasureData.gemstones[gemstoneLevel];
+    let gemstones = treasureData.gemstones;
   //roll some dice
     //roll for chance of treasure
     let treasureRoll = await new Roll(individualTreasure[0].die).evaluate();
@@ -107,116 +112,35 @@ export async function defeatEnemy(token) {
       return;
     }
     //roll for gold if initial roll was above threshold
-    let awardGold = await rollGold(treasureRoll.total,creatureType,individualTreasure[0],0.25);
+    let awardGold = await rollGold(treasureRoll.total,creatureType,isMinion,individualTreasure[0],0.25);
     //roll for loot if initial roll was above threshold
-    let awardLoot = await rollLoot(treasureRoll.total,creatureType,individualTreasure[0],creatureLoot);
+    let awardLoot = await rollLoot(treasureRoll.total,isMinion,individualTreasure[0],creatureLoot);
     //roll for a special item if initial roll was above threshold
-    let awardSpecial = await rollSpecial(treasureRoll.total,individualTreasure[0],gemstones);
-
-
-
-
-
-
-  
-  //pop up form to confirm everything
-
+    let awardSpecial = await rollSpecial(treasureRoll.total,isMinion,individualTreasure[0],specialTable,gemstoneLevels,gemstones,book_library,book_interesting,book_evil);
+  //post prompt to accept/change the results
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------write later---
   //add everything to the token
-        //update token
-        await token.actor.update({
-          "system.currency.cp": token.actor.system.currency.cp + treasureFinal[1],
-          "system.currency.sp": token.actor.system.currency.sp + treasureFinal[2],
-          "system.currency.sp": token.actor.system.currency.sp + treasureFinal[3],
-          "system.currency.gp": token.actor.system.currency.gp + treasureFinal[4],
-          "system.currency.pp": token.actor.system.currency.pp + treasureFinal[5]
-      });
+    //turn token into item pile
+    game.itempiles.API.turnTokensIntoItemPiles(token);
+    //currency
+    await token.actor.update({
+      "system.currency.cp": token.actor.system.currency.cp + awardGold[1],
+      "system.currency.sp": token.actor.system.currency.sp + awardGold[2],
+      "system.currency.sp": token.actor.system.currency.sp + awardGold[3],
+      "system.currency.gp": token.actor.system.currency.gp + awardGold[4],
+      "system.currency.pp": token.actor.system.currency.pp + awardGold[5]
+    });
+    //loot
+    awardLoot.forEach(function(loot) {
+      giveTokenItem(token,loot.type,loot.item);
+    });
+    //special
+    awardSpecial.forEach(function(special) {
+      giveTokenItem(token,special.type,special.item);
+    });
   //turn the token dead
-
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------write later---
   //post chat message
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //turn token into item pile
-  game.itempiles.API.turnTokensIntoItemPiles(token);
-  //populate token with treasure
-
-                  //get table data
-                  let itemData = await game.packs.get(itemLocation).getDocument(itemId);
-                  //add or increase the count of the item, depending on type, if the actor has it
-                  if (this.items.getName(itemData.name)) {
-                    //if this is an item, increase the count
-                    if (itemData.type === 'item') {
-                      //get current quantity
-                      oldValue = this.items.getName(itemData.name).system.quantity;
-                      newValue = oldValue + addAmount;
-                      //increase severity of the condition
-                      this.items.getName(itemData.name).update({'system.quantity': newValue});
-                      //create message text
-                      flavorText = `Quantity has increased from <strong>` + oldValue + `</strong> to <strong>` + newValue + `</strong>.`;
-                    //if this is a condition, increase the severity
-                    } else if (itemData.type === 'condition') {
-                      //get current severity
-                      oldValue = this.items.getName(itemData.name).system.severity;
-                      newValue = oldValue + addAmount;
-                      //increase severity of the condition
-                      this.items.getName(itemData.name).update({'system.severity': newValue});
-                      //create message text
-                      flavorText = this.getFlavorText('item','condition','increase') + `Severity has increased from <strong>` + oldValue + `</strong> to <strong>` + newValue + `</strong>.`;
-                    //if this is a weapon or armor, add another one
-                    } else if (itemData.type === 'weapon' || itemData.type === 'armor') {
-                      //add item to the players inventory
-                      await this.createEmbeddedDocuments('Item', [itemData]);
-                      //create message text
-                      flavorText = `You add another one of these to your inventory.`;
-                    }
-                  } else {
-                    //if this is an item, add it
-                    if (itemData.type === 'item') {
-                      //give the character the item
-                      await this.createEmbeddedDocuments('Item', [itemData]);
-                      //increase severity of the condition
-                      this.items.getName(itemData.name).update({'system.quantity': addAmount});
-                      //create message text
-                      flavorText = `You add <strong>` + addAmount + `</strong> of these to your inventory..`;
-                    //if this is a condition, add it
-                    } else if (itemData.type === 'condition') {
-                      //give the character the item
-                      await this.createEmbeddedDocuments('Item', [itemData]);
-                      //increase severity of the condition
-                      this.items.getName(itemData.name).update({'system.severity': addAmount});
-                      //create message text
-                      flavorText = this.getFlavorText('item','condition','add') + `, with a severity of <strong>` + addAmount + `</strong>.`;
-                    //if this is a weapon or armor, add it
-                    } else if (itemData.type === 'weapon' || itemData.type === 'armor') {
-                      //add item to the players inventory
-                      await this.createEmbeddedDocuments('Item', [itemData]);
-                      //create message text
-                      flavorText = `You add this to your inventory.`;
-                    }
-                  }
-  //make token dead
-
-
-                  ///ADD LOOT
-
-                  //have a book randomly be in there sometimes? or should that be left to the d100 macro? probably.
-                  //maybe redo the creature loot tables to contain books where appropriate. nah seems fine.
-
-
-                  //need a user form to pop up first?
-
-
-  //generate chat message
     //prepare data
     let messageData = {
       token: this,
@@ -240,15 +164,18 @@ export async function defeatEnemy(token) {
       //wait for dice
       await game.dice3d.waitFor3DAnimationByMessageID(chatId);
     }
-
-
-
-
   //log what was done
-  console.log(`Treasure added. Rolled ${treasureChance.total} with a target of ${rollTarget}. Raw treasure set to ${treasureRaw}: ${treasureRoll.total} * ${partyModifier} * ${globalModifier} * ${minionModifier}. Replaced CR ${creatureCR} ${creatureType} with Level ${avgPartyLevel} treasure totalling ${treasureRaw} gold. The gold was split into: ${treasureCP}CP, ${treasureSP}SP, ${treasureEP}EP, ${treasureGP}GP, ${treasurePP}PP`);
+  console.log(`The defeatEnemy function has completed.`);
 }
 
 //make token look dead--------------------------------------------------------------
 export async function markTokenDead(token) {
   //write this
+}
+
+//give token an item--------------------------------------------------------------
+export async function giveTokenItem(token,type,item) {
+  //write this
+  //----------------------------------------------------------------------------------------------------------------------------------------------WHERE I LEFT OFF---------------------
+  //set some kind of standardized weight to creature loot
 }
