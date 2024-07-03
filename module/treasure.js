@@ -32,18 +32,23 @@ export async function rollGold(rollTotal,creatureType,isMinion,treasureMap,apl,r
     //override based on status
     if (isMinion) {minionModifier = 0.2;}
   //calculate RNG modifier
-  let rngModifier = (Math.random()*(rng*2))+(1-rng);
+    //set base
+    let rngBase = Math.random();
+    //set value
+    let rngModifier = (Math.random()*(rng*2))+(1-rng);
+    //log what was done
+    console.log(`Final RNG modifier: ${rngModifier}. Calculated from: (${rngBase} * (${rng}*2)) + (1-${rng}).`);
   //calculate raw treasure in GP
   let goldRaw = Math.floor((goldRoll.total * treasureMap.gp_global_modifier * gp_party_modifier * minionModifier) * rngModifier);
   //determine chance for electrum
     //set default
-    electrumChance = 0.0;
+    let electrumChance = 0.0;
     //override with treasure map data
     if (creatureType === 'undead') {electrumChance = 0.6}
   //determine coin distribution
-  treasureFinal = splitCoins(goldRaw,apl,electrumChance,rngModifier);
+  let treasureFinal = splitCoins(goldRaw,apl,electrumChance,rngModifier);
   //log what was done
-  console.log(`Rolled ${goldRoll.total} from a ${treasureMap.gp_base} with a ${gp_party_modifier} party modifier and ${treasureMap.gp_global_modifier} global modifier. RNG of ${rngModifier} applied.`);
+  console.log(`Rolled ${goldRaw} from ${rollStringFinal}. Calculated from ${goldRoll.total} base gold times a ${gp_party_modifier} party modifier and a ${treasureMap.gp_global_modifier} global modifier. Then an RNG of ${rngModifier} applied.`);
   //return final treasure
   return treasureFinal;
 }
@@ -55,7 +60,7 @@ export async function rollLoot(rollTotal,isMinion,treasureMap,creatureLoot) {
     //log what was done
     console.log(`No creature loot added. Rolled ${rollTotal} with a creature loot target of at least ${treasureMap.gp_target}.`);
     //return
-    return [{'type':'nothing','item':''}];
+    return [{'type':null,'pack':null,'item':null}];
   }
   //init loot
   let loot = [];
@@ -67,10 +72,12 @@ export async function rollLoot(rollTotal,isMinion,treasureMap,creatureLoot) {
   //loop through and make item list
   for (let i = 1; i <= lootMax; i++) {
     //roll for item
-    loot.push({'type':'generic','item':creatureLoot.results[Math.floor(Math.random() * 100)+1]});
+    let itemRoll = Math.floor(Math.random() * 100)+1;
+    //add item
+    loot.push({'type':'generic','pack':null,'item':creatureLoot.results[itemRoll]});
   }
   //log what was done
-  console.log(`Added ${loot.length()} loot items to the character.`);
+  console.log(`Prepared ${loot.length} loot items to the character.`);
   //return final loot
   return loot;
 }
@@ -82,9 +89,9 @@ export async function rollSpecial(rollTotal,isMinion,treasureMap,specialTable,ge
     //log what was done
     console.log(`No special item added. Rolled ${rollTotal} with a special item target of at least ${treasureMap.special_target}.`);
     //return
-    return [{'type':'nothing','item':''}];
+    return [{'type':null,'pack':null,'item':null}];
   }
-  //init loot
+  //init special
   let special = [];
   //determine number of items
     //set baseline
@@ -92,7 +99,7 @@ export async function rollSpecial(rollTotal,isMinion,treasureMap,specialTable,ge
     //alter for minions
     if(isMinion) {specialMax = 1;}
   //loop through and make item list
-  for (let i = 1; i <= lootMax; i++) {
+  for (let i = 1; i <= specialMax; i++) {
     //roll for special item
     let specialRoll = await new Roll('1d12').evaluate();
     //pick appropriate item
@@ -100,32 +107,50 @@ export async function rollSpecial(rollTotal,isMinion,treasureMap,specialTable,ge
       //books
         //library
         if(specialRollItem === 'book_library') {
-          loot.push({'type':'book','item':book_library.results[Math.floor(Math.random() * 100)+1]});
+          //roll for resulting item
+          let itemRoll = Math.floor(Math.random() * 100)+1;
+          //add item
+          special.push({'type':'book','pack':null,'item':book_library.results[itemRoll]});
         }
         //interesting
         if(specialRollItem === 'book_interesting') {
-          loot.push({'type':'book','item':book_interesting.results[Math.floor(Math.random() * 100)+1]});
+          //roll for resulting item
+          let itemRoll = Math.floor(Math.random() * 100)+1;
+          //add item
+          special.push({'type':'book','pack':null,'item':book_interesting.results[itemRoll]});
         }
         //evil
         if(specialRollItem === 'book_evil') {
-          loot.push({'type':'book','item':book_evil.results[Math.floor(Math.random() * 100)+1]});
+          //roll for resulting item
+          let itemRoll = Math.floor(Math.random() * 100)+1;
+          //add item
+          special.push({'type':'book','pack':null,'item':book_evil.results[itemRoll]});
         }
       //gemstones
         //low
         if(specialRollItem === 'gem_low') {
-          loot.push({'type':'gemstone','item':gemstones[gemstoneLevels[1]].results[Math.floor(Math.random() * gemstones[gemstoneLevels[1]].die.substring(1))+1]});
+          //roll for resulting item
+          let itemRoll = Math.floor(Math.random() * gemstones[gemstoneLevels[1]].die.substring(1))+1
+          //add item
+          special.push({'type':'gemstone','pack':'world.ddb-dark-forces-ddb-items','item':gemstones[gemstoneLevels[1]].results[itemRoll]});
         }
         //medium
         if(specialRollItem === 'gem_med') {
-          loot.push({'type':'gemstone','item':gemstones[gemstoneLevels[2]].results[Math.floor(Math.random() * gemstones[gemstoneLevels[2]].die.substring(1))+1]});
+          //roll for resulting item
+          let itemRoll = Math.floor(Math.random() * gemstones[gemstoneLevels[2]].die.substring(1))+1
+          //add item
+          special.push({'type':'gemstone','pack':'world.ddb-dark-forces-ddb-items','item':gemstones[gemstoneLevels[2]].results[itemRoll]});
         }
         //high
         if(specialRollItem === 'gem_high') {
-          loot.push({'type':'gemstone','item':gemstones[gemstoneLevels[3]].results[Math.floor(Math.random() * gemstones[gemstoneLevels[3]].die.substring(1))+1]});
+          //roll for resulting item
+          let itemRoll = Math.floor(Math.random() * gemstones[gemstoneLevels[3]].die.substring(1))+1
+          //add item
+          special.push({'type':'gemstone','pack':'world.ddb-dark-forces-ddb-items','item':gemstones[gemstoneLevels[3]].results[itemRoll]});
         }
   }
   //log what was done
-  console.log(`Added ${loot.length()} special items to the character.`);
+  console.log(`Prepared ${special.length} special items to the character.`);
   //return final loot
   return special;
 }
@@ -146,10 +171,10 @@ export async function splitCoins(goldRaw,apl,electrumChance,rngModifier) {
   let gpER = 1;
   let ppER = 0.1;
   //define range for each coin type
-  let cpRange = [1,2,3,4,5,6,7,8,9];
-  let spRange = [1,2,3,4,5,6,7,8,9,10,11,12,13,14];
-  let gpRange = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
-  let ppRange = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+  let cpRange = new Set([1,2,3,4,5,6,7,8,9]);;
+  let spRange = new Set([1,2,3,4,5,6,7,8,9,10,11,12,13,14]);
+  let gpRange = new Set([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]);
+  let ppRange = new Set([5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]);
   //determine whether electrum is returned
   if(Math.random() <= electrumChance) {
     //convert everything to electrum
