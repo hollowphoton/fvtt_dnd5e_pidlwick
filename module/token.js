@@ -151,26 +151,32 @@ export async function defeatEnemy(token) {
       "system.currency.gp": token.actor.system.currency.gp + awardGold[3],
       "system.currency.pp": token.actor.system.currency.pp + awardGold[4]
     });
+    //log what was done
+    console.log(`Added ${awardGold[0]}cp, ${awardGold[1]}sp, ${awardGold[2]}ep, ${awardGold[3]}gp, and ${awardGold[4]}pp.`);
     //add loot
     for (let i = 0; i < awardLoot.length; i++) {
       //if item is null, exit loop
       if (awardLoot[i].item) {
         //if this is a pack item, drop item directly
-        if (awardLoot[i].pack) {await giveItemFromPack(token,awardLoot[i].pack,awardLoot[i].item);}
+        if (awardLoot[i].pack) {await giveItemFromPack(token,awardLoot[i].type,awardLoot[i].pack,awardLoot[i].item);}
         //if this is a generic item, create from scratch
         if (!awardLoot[i].pack) {await giveItemFromScratch(token,awardLoot[i].type,awardLoot[i].item);}
       }
     }
+    //log what was done
+    console.log(`Added ${awardLoot.length} loot items to the character.`);
     //add special
     for (let i = 0; i < awardSpecial.length; i++) {
       //if item is null, exit loop
       if (awardSpecial[i].item) {
         //if this is a pack item, drop item directly
-        if (awardSpecial[i].pack) {await giveItemFromPack(token,awardSpecial[i].pack,awardSpecial[i].item);}
+        if (awardSpecial[i].pack) {await giveItemFromPack(token,awardSpecial[i].type,awardSpecial[i].pack,awardSpecial[i].item);}
         //if this is a generic item, create from scratch
         if (!awardSpecial[i].pack) {await giveItemFromScratch(token,awardSpecial[i].type,awardSpecial[i].item);}
       }
     }
+    //log what was done
+    console.log(`Added ${awardSpecial.length} special items to the character.`);
   //turn the token dead
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------write later---
   //post chat message
@@ -207,14 +213,22 @@ export async function markTokenDead(token) {
 }
 
 //give token an item from a pack--------------------------------------------------------------
-export async function giveItemFromPack(token,packName,itemName) {
+export async function giveItemFromPack(token,type,packName,itemName) {
   //load related pack
   let entry = game.packs.get(packName).index.getName(itemName);
   //get item from pack
   let item = await game.packs.get(packName).getDocument(entry._id);
+  //make a copy
+  let special = item.toObject();
+  //make any modifications
+    //gemstones
+    if(type === 'gemstone') {
+      //add weight
+      special.system.weight.value = Math.round(((Math.random() * 2.5) + 0.02) * 100) / 100;
+    }
   //give item to character
-  await token.actor.createEmbeddedDocuments('Item', [item]);
-  //await game.itempiles.API.addItems(token.actor, [{"item": item, "quantity": 1}]);
+  await token.actor.createEmbeddedDocuments('Item', [special]);
+  //await game.itempiles.API.addItems(token.actor, [{"item": special, "quantity": 1}]);
   //log what was done
   console.log(`Item added.`);
 }
@@ -233,6 +247,12 @@ export async function giveItemFromScratch(token,type,itemName) {
     //modify to be this book
       //get book split character
       let bookSplit = itemName.search(`': `);
+      //make new ID
+        //generate
+        let bookId = await generateANID(16);
+        //assign
+		    book._id = bookId;
+		    book.id = bookId;
       //book title
       book.name = itemName.substring(1,bookSplit);
       //book description
@@ -243,23 +263,30 @@ export async function giveItemFromScratch(token,type,itemName) {
       book.system.source.page = (Math.floor(Math.random() * 969) + 1).toString();
       //book weight
       book.system.weight.value = Math.round(((Math.random() * 2.5) + 0.5) * 100) / 100;
-      //book price
-      book.system.price.value = Math.floor(Math.random() * 179) + 1;
       //book rarity
         //calculate rarity
-        let rarity = Math.random();
+        let bookRarity = Math.random();
         //assign rarity
-        if(rarity > 0.95) {book.system.rarity = 'veryRare';}
-        else if(rarity > 0.8) {book.system.rarity = 'rare';}
-        else if(rarity > 0.5) {book.system.rarity = 'uncommon';}
-        else {book.system.rarity = 'common';}
+        if(bookRarity > 0.95) {
+          book.system.rarity = 'veryRare';
+          book.system.price.value = Math.floor(Math.random() * 250) + 500;
+        } else if(bookRarity > 0.8) {
+          book.system.rarity = 'rare';
+          book.system.price.value = Math.floor(Math.random() * 100) + 100;
+        } else if(bookRarity > 0.5) {
+          book.system.rarity = 'uncommon';
+          book.system.price.value = Math.floor(Math.random() * 25) + 10;
+        } else {
+          book.system.rarity = 'common';
+          book.system.price.value = Math.floor(Math.random() * 5) + 1;
+        }
       //item type
       book.system.type.value = 'treasure';
     //give item to character
     await token.actor.createEmbeddedDocuments('Item', [book]);
-    //await game.itempiles.API.addItems(token.actor, [{"item": item, "quantity": 1}]);
+    //await game.itempiles.API.addItems(token.actor, [{"item": book, "quantity": 1}]);
     //log what was done
-    console.log(`Book added.`);
+    console.log(`Book added with an ID of ${bookId}.`);
   }
   //creature loot
   if(type === 'generic') {
@@ -271,10 +298,18 @@ export async function giveItemFromScratch(token,type,itemName) {
       //make a copy
       let loot = item.toObject();
     //modify to be this junk
+      //make new ID
+        //generate
+        let lootId = await generateANID(16);
+        //assign
+		    loot._id = lootId;
+		    loot.id = lootId;
       //junk name
       loot.name = itemName;
       //junk image
       loot.img = 'icons/containers/bags/sack-twisted-leather-red.webp';
+      //junk image
+      loot.system.description.value = '';
       //junk source
       loot.system.source.book = `Chris's Answer for Everything`;
       //junk page
@@ -283,16 +318,31 @@ export async function giveItemFromScratch(token,type,itemName) {
       loot.system.weight.value = Math.round(((Math.random() * 2.5) + 0.1) * 100) / 100;
       //junk rarity
         //calculate rarity
-        let rarity = Math.random();
+        let lootRarity = Math.random();
         //assign rarity
-        if(rarity > 0.5) {loot.system.rarity = 'uncommon';}
-        else {loot.system.rarity = 'common';}
+        if(lootRarity > 0.5) {
+          loot.system.rarity = 'uncommon';
+          loot.system.price.denomination = 'sp';
+          loot.system.price.value = Math.floor(Math.random() * 5) + 1;
+        } else {
+          loot.system.rarity = 'common';
+          loot.system.price.denomination = 'cp';
+          loot.system.price.value = Math.floor(Math.random() * 25) + 1;
+        }
       //item type
       loot.system.type.value = 'junk';
     //give item to character
     await token.actor.createEmbeddedDocuments('Item', [loot]);
-    //await game.itempiles.API.addItems(token.actor, [{"item": item, "quantity": 1}]);
+    //await game.itempiles.API.addItems(token.actor, [{"item": loot, "quantity": 1}]);
     //log what was done
-    console.log(`Loot added.`);
+    console.log(`Loot added with an ID of ${lootId}.`);
   }
+}
+
+//generate _id
+export async function generateANID(size) {
+  //make string of acceptable characters
+  var p = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  //return random value 
+  return [...Array(size)].reduce(a=>a+p[~~(Math.random()*p.length)],'');
 }
