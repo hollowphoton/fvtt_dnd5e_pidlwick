@@ -1,0 +1,8 @@
+{"_id":"K54y4Txxn7aiAwia","name":"Treasure Pouch","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/treasure_pouch.webp","command":"game.pidlwick.initTreasurePouch();","folder":null,"flags":{},"_stats":{}}
+{"_id":"SqDp2AU4lBn2iekR","name":"Treasure Hoard","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/treasure_hoard.webp","command":"game.pidlwick.initTreasureHoard();","folder":null,"flags":{},"_stats":{}}
+{"_id":"OQfXLYEiasl2Drzs","name":"Feeling Good","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/token_green.webp","command":"game.pidlwick.tokenHealthGreen();","folder":null,"flags":{},"_stats":{}}
+{"_id":"cz0H8euBJ1nln25Q","name":"Beat Up","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/token_orange.webp","command":"game.pidlwick.tokenHealthOrange();","folder":null,"flags":{},"_stats":{}}
+{"_id":"UAJmb8vb1ZdyA1Js","name":"Nearly Dead","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/token_red.webp","command":"game.pidlwick.tokenHealthRed();","folder":null,"flags":{},"_stats":{}}
+{"_id":"zNg4oLQKTaHIQlEq","name":"Whisper","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/whisper.webp","command":"game.pidlwick.whisper();","folder":null,"flags":{},"_stats":{}}
+{"_id":"W48GOnNsQee4hYtj","name":"d100 Tables","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/d100.webp","command":"game.pidlwick.d100Tables();","folder":null,"flags":{},"_stats":{}}
+{"_id":"FZGwZsm2ohn5oXTq","name":"Create NPC","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/create_npc.webp","command":"game.pidlwick.createNPC();","folder":null,"flags":{},"_stats":{}}

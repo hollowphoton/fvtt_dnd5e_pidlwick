@@ -1,0 +1,4 @@
+{"_id":"W36rt5J5EqdlqkSx","name":"Feeling Good","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/token_green.webp","command":"game.pidlwick.characterHealthGreen();","folder":null,"flags":{},"_stats":{}}
+{"_id":"Iv91z0Tu6crL6Ry3","name":"Beat Up","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/token_orange.webp","command":"game.pidlwick.characterHealthOrange();","folder":null,"flags":{},"_stats":{}}
+{"_id":"QCY3NUxKFlGWlsN1","name":"Nearly Dead","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/token_red.webp","command":"game.pidlwick.characterHealthRed();","folder":null,"flags":{},"_stats":{}}
+{"_id":"HFeNUAjf3Y5HW6Cp","name":"Whisper","type":"script","scope":"global","img":"modules/fvtt_dnd5e_pidlwick/icons/whisper.webp","command":"game.pidlwick.whisper();","folder":null,"flags":{},"_stats":{}}
