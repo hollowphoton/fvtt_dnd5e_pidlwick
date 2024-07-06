@@ -31,7 +31,7 @@ export async function noTokenSelected() {
 }
 
 //check if token(s) are selected
-export async function initDefeatEnemy() {
+export async function initTreasurePouch() {
   //is there a selected character? warn if no
   if (!canvas.tokens.controlled.length) {
     //warn player
@@ -39,15 +39,15 @@ export async function initDefeatEnemy() {
   } else {
     //run the function for all selected tokens
     canvas.tokens.controlled.forEach(function(token){
-      defeatEnemy(token);
+      treasurePouch(token);
     });
   }
 }
 
 //replace current token with appropriate treasure
-export async function defeatEnemy(token) {
+export async function treasurePouch(token) {
   //log token
-  console.log(`Running defeatEnemy on ${token}.`);
+  console.log(`Running treasurePouch on ${token}.`);
   //get JSON data
   let treasureData = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/treasure.json');
   let d100Data = await foundry.utils.fetchJsonWithTimeout('modules/fvtt_dnd5e_pidlwick/data/d100.json');
@@ -204,7 +204,7 @@ export async function defeatEnemy(token) {
       await game.dice3d.waitFor3DAnimationByMessageID(chatId);
     } */
   //log what was done
-  console.log(`The defeatEnemy function has completed.`);
+  console.log(`The treasurePouch function has completed.`);
 }
 
 //make token look dead--------------------------------------------------------------
@@ -345,4 +345,40 @@ export async function generateANID(size) {
   var p = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   //return random value 
   return [...Array(size)].reduce(a=>a+p[~~(Math.random()*p.length)],'');
+}
+
+//token health - feeling good
+export async function tokenHealthGreen() {
+  //update tokens
+  canvas.tokens.controlled.forEach(function(t){
+    t.document.update({'flags.dnd5e.tokenRing.colors.ring': ``});
+    t.document.update({'flags.dnd5e.tokenRing.colors.background': ``});
+    t.document.update({'flags.dnd5e.tokenRing.effects': 1});
+  });
+  //refresh token display
+  if (updates.length) canvas.scene.updateEmbeddedDocuments("Token", updates);
+}
+
+//token health - beat up
+export async function tokenHealthOrange() {
+  //update tokens
+  canvas.tokens.controlled.forEach(function(t){
+    t.document.update({'flags.dnd5e.tokenRing.colors.ring': `#ffea00`});
+    t.document.update({'flags.dnd5e.tokenRing.colors.background': `#f28202`});
+    t.document.update({'flags.dnd5e.tokenRing.effects': 5});
+  });
+  //refresh token display
+  if (updates.length) canvas.scene.updateEmbeddedDocuments("Token", updates);
+}
+
+//token health - nearly dead
+export async function tokenHealthRed() {
+  //update tokens
+  canvas.tokens.controlled.forEach(function(t){
+    t.document.update({'flags.dnd5e.tokenRing.colors.ring': `#ff0000`});
+    t.document.update({'flags.dnd5e.tokenRing.colors.background': `#9d0101`});
+    t.document.update({'flags.dnd5e.tokenRing.effects': 15});
+  });
+  //refresh token display
+  if (updates.length) canvas.scene.updateEmbeddedDocuments("Token", updates);
 }

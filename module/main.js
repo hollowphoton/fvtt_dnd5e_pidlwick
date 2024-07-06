@@ -2,17 +2,29 @@
 "use strict";
 
 //import functions
-import {initDefeatEnemy} from "./token.js";
+import {tokenHealthGreen,tokenHealthOrange,tokenHealthRed,initTreasurePouch} from "./token.js";
+import {characterHealthGreen,characterHealthOrange,characterHealthRed} from "./player.js";
+import {whisper} from "./chat.js";
 
 //hooks
   //register core functions
   Hooks.once('init', () => {
-    console.log('My Awesome Module | Initializing');
+    console.log('Pidlwick | Initializing...');
     game.pidlwick = {
-      initDefeatEnemy
+      //token
+      tokenHealthGreen,
+      tokenHealthOrange,
+      tokenHealthRed,
+      initTreasurePouch,
+      //player
+      characterHealthGreen,
+      characterHealthOrange,
+      characterHealthRed,
+      //chat
+      whisper
     };
+    console.log('Pidlwick | Loading Complete');
   });
-
 
   //dice so nice -- test with: /roll 1d100[treasureroll] + 4d6[goldroll] + 1d12[specialroll]
     //add custom treasure roll dice
