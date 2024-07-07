@@ -19,8 +19,8 @@
     "packs": [
       {
         "name": "gm_hotbar",
-        "label": "GM Hotbar Macros",
-        "system": "mosh",
+        "label": "GM Macros",
+        "system": "dnd5e",
         "path": "packs/gm_hotbar.db",
         "type": "Macro",
         "ownership": {
@@ -30,7 +30,8 @@
       },
       {
         "name": "pc_hotbar",
-        "label": "PC Hotbar Macros",
+        "label": "Player Macros",
+        "system": "dnd5e",
         "path": "packs/pc_hotbar.db",
         "type": "Macro",
         "ownership": {
