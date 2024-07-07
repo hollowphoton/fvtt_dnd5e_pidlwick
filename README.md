@@ -1,13 +1,16 @@
 ## Pidlwick | D&D 5e | FoundryVTT
-_(image coming soon)_
+![pidlwick-art](https://github.com/hollowphoton/fvtt_dnd5e_pidlwick/assets/17795348/2cd024ee-96b7-4d6c-b937-1725cfa10fcb)
 
 This is a supplemental module containing automation for D&D 5e that I use in my personal game.
 
 #### GM Hotbar Macros
 - Display Token Health (Feeling Good, Beat Up, Nearly Dead)
 - Whisper
-- Defeat Enemy (Add dead status, appearance, individual treasure)
-- Defeat Boss (Add dead status, appearance, treasure hoard)
+- Treasure Pouch (Add dead status, appearance, individual treasure)
+- Treasure Hoard (Add dead status, appearance, treasure hoard)
+- Create NPC
+- d100 Tables
+- Ask for Table Roll
 
 #### Player Hotbar Macros
 - Display Character Health (Feeling Good, Beat Up, Nearly Dead)
