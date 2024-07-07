@@ -1,17 +1,7 @@
 //token health - feeling good
-export async function whisper() {
-  // WHIPSER TO PLAYERS //
-    // FEATURES 
-      // opens dialog window to chat with online/offline players
-      // 
-
-    // CREDIT
-      // created by hollowphoton https://github.com/hollowphoton
-      // based on a whisper macro created by Nelson#3570 https://www.reddit.com/r/FoundryVTT/comments/lzbra1/are_there_any_modules_for_making_whispers_a/
-
+export function whisper() {
   //init vars
   let applyChanges = false;
-
   //set vars
   let users = game.users.filter(user => user.active);
   let checkOptions = ""
@@ -19,7 +9,6 @@ export async function whisper() {
   let selectedPlayerIds = canvas.tokens.controlled.map(token => {
     if (playerTokenIds.includes(token.actor.id)) return token.actor.id;
   });
-
   // build checkbox list for all active players
   users.forEach(user => {
     let checked = !!user.character && selectedPlayerIds.includes(user.character.id) && 'checked';
@@ -29,7 +18,6 @@ export async function whisper() {
       <label for="${user.id}">${user.name}</label>
     `
   });
-
   // create dialog
   new Dialog({
     title:"Whisper",
@@ -43,7 +31,6 @@ export async function whisper() {
       }
     }
   }).render(true);
-
   // output the message to chat
   function createMessage(html) {
     var targets = [];
@@ -62,6 +49,3 @@ export async function whisper() {
     });
   }
 }
-
-
-
